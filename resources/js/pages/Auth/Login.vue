@@ -1,0 +1,129 @@
+<script setup lang="ts">
+    import { Link, router, usePage } from '@inertiajs/vue3';
+    import { reactive } from 'vue';
+
+    defineProps({ errors: Object });
+
+    const page = usePage();
+
+    const form = reactive({
+
+        email:null,
+        password: null
+
+    })  
+
+    const submit = () =>{
+
+        router.post('/login',form,{
+            onError:() => {
+                form.password=null
+            }
+        })
+
+    }
+
+
+
+</script>
+
+<template>
+    <section class="min-h-screen flex flex-col bg-white">
+
+        <header class="flex justify-between items-center w-full p-6 md:p-10 flex-shrink-0"> 
+            <img src="/img/Logo_Lockers_UNET.png" 
+                 alt="logo lockers unet" 
+                 class="h-12 md:h-20 w-auto object-contain"
+            >
+            <img src="/img/Logo_UNET.png" 
+                 alt="Logo unet" 
+                 class="h-12 md:h-20 w-auto object-contain"
+            >
+        </header>
+
+        <main class="flex-grow flex items-center justify-center p-4">
+
+            <div class="flex flex-col md:flex-row w-full max-w-6xl items-center justify-center gap-10 md:gap-24">
+
+                <div class="flex-shrink-0">
+                    <img src="/img/Login.png" 
+                         alt="imagen prueba" 
+                         class="h-auto max-h-[300px] md:max-h-[500px] w-auto object-contain"
+                    >
+                </div>
+
+                <div class="w-full max-w-md bg-white p-2">
+                    <h2 class="text-3xl font-bold text-gray-800 text-center mb-8">
+                        Iniciar Sesión
+                    </h2>
+                    
+                    <div v-if="errors?.auth" class=" bg-red-600 text-white font-bold p-2 text-center rounded-2xl my-2">
+                        {{ errors.auth}}
+                    </div>
+
+                    <form @submit.prevent="submit" method="POST" class="space-y-6">
+                        <div class="space-y-2">
+                            <label for="email" class="block text-[#404040] font-semibold ml-1">
+                                Correo
+                            </label>
+                            <input 
+                                type="email" 
+                                id="email"
+                                placeholder="Ingresa tu correo UNET"
+                                class="w-full h-10 px-5 py-3 rounded-full bg-gray-100  border-2  focus:bg-white focus:outline-none text-[#404040] transition duration-200
+                                 placeholder:font-bold placeholder:text-[#A3A3A3] placeholder:text-sm"
+                                :class="{
+                                    'border-[#DC2626]  bg-[#FEE2E2]': errors?.email, 
+                                    'border-[#A3A3A3] focus:border-[#22397A]': !errors?.email
+                                }"
+                                v-model="form.email"
+                            >
+                            <small v-if="errors?.email" class="text-red-500">{{ errors.email }}</small>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label for="password" class="block text-[#404040] font-semibold ml-1">
+                                Contraseña
+                            </label>
+                            <input 
+                                type="password" 
+                                id="password"
+                                placeholder="Ingresa tu contraseña"
+                                class="w-full h-10 px-5 py-3 rounded-full bg-gray-100  border-2  focus:bg-white focus:outline-none text-[#404040] transition duration-200
+                                 placeholder:font-bold placeholder:text-[#A3A3A3] placeholder:text-sm"
+                                :class="{
+                                    'border-[#DC2626]  bg-[#FEE2E2]': errors?.password, 
+                                    'border-[#A3A3A3] focus:border-[#22397A]': !errors?.password
+                                }"
+                                v-model="form.password"
+                            >
+                            <small v-if="errors?.password" class="text-red-500">{{ errors.password }}</small>
+                            <div class="flex justify-end pr-2">
+                                <a href="#" class="text-gray-500 text-sm hover:text-blue-600 transition">
+                                    ¿Olvidaste tu contraseña?
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="pt-4 flex justify-center">
+                            <button 
+                                type="submit"
+                                class="w-full py-3 bg-[#213779] hover:bg-[#1a2b5f] text-white font-bold rounded-xl transition duration-300 shadow-md active:scale-95"
+                            >
+                                Inicia Sesión
+                            </button>
+                        </div>
+
+                        <p class="text-center text-gray-600 mt-8">
+                            ¿No tienes cuenta? 
+                            <Link href="/register" class="text-blue-500 font-semibold hover:underline">
+                                Resgístrate
+                            </Link>
+                        </p>
+                    </form>
+                </div>
+
+            </div>
+        </main>
+    </section>
+</template>

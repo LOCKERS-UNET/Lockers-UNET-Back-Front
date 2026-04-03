@@ -1,5 +1,5 @@
 <script setup lang="ts">
-    import { Link, router, usePage } from '@inertiajs/vue3';
+    import { Link, router} from '@inertiajs/vue3';
     import { reactive } from 'vue';
 
     defineProps({ errors: Object });

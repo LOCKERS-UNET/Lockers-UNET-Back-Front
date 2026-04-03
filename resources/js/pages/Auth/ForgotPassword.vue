@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 
 
 
@@ -6,4 +6,8 @@
 
 <template>
     
+    <div>
+        Forgot Password View
+    </div>
+
 </template>

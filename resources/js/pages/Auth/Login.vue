@@ -4,7 +4,7 @@
 
     defineProps({ errors: Object });
 
-    const page = usePage();
+    // const page = usePage();
 
     const form = reactive({
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
     import { Link } from '@inertiajs/vue3';
-import { ref } from 'vue';
+    import { ref } from 'vue';
 
     const isMenuOpen = ref(false);
 

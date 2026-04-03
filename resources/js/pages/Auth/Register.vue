@@ -21,8 +21,8 @@
         router.post('/register',form,{
             preserveScroll:true,
             onError:() => {
-                form.password=null,
-                form.password_confirmation=null
+                form.password=null;
+                form.password_confirmation=null;
             }
         })
 

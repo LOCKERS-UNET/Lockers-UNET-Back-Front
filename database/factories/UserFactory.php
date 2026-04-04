@@ -27,7 +27,7 @@ class UserFactory extends Factory
         return [
             'name' => fake()->name(),
             'lastname'=>fake()->name(),
-            'card_id'=>fake()->numberBetween(0,99999),
+            'card_code'=>fake()->numberBetween(0,99999),
             'career'=>fake()->name(),
             'is_admin'=>fake()->boolean(50),
             'email' => fake()->unique()->safeEmail(),

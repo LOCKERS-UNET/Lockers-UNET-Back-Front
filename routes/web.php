@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\PerfilController;
 use Illuminate\Support\Facades\Route;
 
 // Route::inertia('/', 'Welcome')->name('home');
@@ -10,7 +11,8 @@ Route::middleware(['auth'])->group(function(){
 
     Route::inertia('/','Home')->name('home');
     Route::inertia('/user-profile','User/Profile')->name('user-profile');
-    Route::inertia('/edit-profile','User/EditProfile')->name('edit-profile');
+    Route::get('/edit-profile',[PerfilController::class,'index'])->name('editar-perfil');
+    Route::post('/edit-profile',[PerfilController::class,'store']);
 
     Route::inertia('/mi-locker','User/MiLocker')->name('mi-locker');
     Route::inertia('/notificaciones','User/Notificaciones')->name('notificaciones');

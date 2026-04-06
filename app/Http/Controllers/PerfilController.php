@@ -41,7 +41,7 @@ class PerfilController extends Controller
 
         $user->save();
 
-        return to_route('user-profile');
+        return redirect()->back();
 
     }
 

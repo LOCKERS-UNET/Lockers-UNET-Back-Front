@@ -33,8 +33,6 @@ Route::middleware(['auth'])->group(function(){
 //Estas rutas deben ir protegidas
 
 
-
-
 Route::get('/login',[LoginController::class,'index'])->name('login');
 Route::post('/login',[LoginController::class,'store']);
 Route::post('/logout',[LoginController::class,'logout']);

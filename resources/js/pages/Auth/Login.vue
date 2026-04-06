@@ -30,7 +30,7 @@
 <template>
     <section class="min-h-screen flex flex-col bg-white">
 
-        <header class="flex justify-between items-center w-full p-6 md:p-10 flex-shrink-0"> 
+        <header class="hidden lg:flex lg:justify-between lg:items-center lg:w-full lg:p-6 md:p-10 lg:flex-shrink-0"> 
             <img src="/img/Logo_Lockers_UNET.png" 
                  alt="logo lockers unet" 
                  class="h-12 md:h-20 w-auto object-contain"
@@ -43,13 +43,19 @@
 
         <main class="flex-grow flex items-center justify-center p-4">
 
-            <div class="flex flex-col md:flex-row w-full max-w-6xl items-center justify-center gap-10 md:gap-24">
+            <div class="flex flex-col lg:flex-row w-full max-w-6xl items-center justify-center gap-10 md:gap-24">
 
                 <div class="flex-shrink-0">
                     <img src="/img/Login.png" 
                          alt="imagen prueba" 
-                         class="h-auto max-h-[300px] md:max-h-[500px] w-auto object-contain"
+                         class="hidden lg:block lg:h-auto lg:max-h-[300px] md:max-h-[500px] lg:w-auto lg:object-contain"
                     >
+
+                    <img src="/img/Logo_Lockers_UNET.png" 
+                         alt="imagen prueba" 
+                         class="block h-auto max-h-[100px] md:max-h-[200px] w-auto object-contain lg:hidden"
+                    >
+
                 </div>
 
                 <div class="w-full max-w-md bg-white p-2">

@@ -1,12 +1,24 @@
 <script setup lang="ts">
     import { router } from '@inertiajs/vue3';
-    import { reactive } from 'vue';
+    import { reactive,ref } from 'vue';
+    import ModalComponent from '../Components/ModalComponent.vue';
     import Layout from '../Layouts/Layout.vue';
 
 
     defineOptions({layout:Layout});
 
     defineProps({errors:Object});
+
+    const confirmingDeletion = ref(false);
+
+    const openModal = () => {
+        confirmingDeletion.value = true;
+    };
+
+    // Cerrar modal
+    const closeModal = () => {
+        confirmingDeletion.value = false;
+    };
 
     const form = reactive ({
 
@@ -20,7 +32,14 @@
 
     const submit = ()=>{
 
-        router.post('/edit-profile',form);
+        router.post('/edit-profile',form,{
+            onSuccess: ()=>{
+
+                openModal();
+                console.log("TODO COOL");
+
+            }
+        });
 
     }
 
@@ -29,14 +48,14 @@
 
 <template> 
 
-    <div class="flex flex-col items-center justify-center min-h-screen py-8">
+    <div class="flex flex-col items-center justify-center min-h-screen py-5">
 
 
-        <section class=" w-full max-w-3xl flex flex-col">
+        <section class=" w-full max-w-3xl flex flex-col items-center p-5">
 
             <h1 class=" text-4xl text-center font-bold mb-5">Editar Perfil</h1>
 
-            <form @submit.prevent="submit" class="flex flex-col gap-5">
+            <form @submit.prevent="submit" class="flex flex-col gap-5 w-full">
 
                 <div class="space-y-2 min-h-16">
                     <label for="name" class="block text-[#404040] font-semibold ml-1">
@@ -55,7 +74,7 @@
                         }"
                         v-model="form.name"
                     >
-                    <!-- <small v-if="errors?.name" class="text-red-500">{{ errors.name }}</small> -->
+                    
                 </div>
 
                 <div class="space-y-2 min-h-16">
@@ -75,7 +94,7 @@
                         }"
                         v-model="form.lastname"
                     >
-                    <!-- <small v-if="errors?.lastname" class="text-red-500">{{ errors.lastname }}</small> -->
+                    
                 </div>
 
                 <div class="space-y-2 min-h-16">
@@ -110,12 +129,12 @@
                         class="w-full h-10 px-5 py-3 rounded-full bg-gray-100 border-3 border-[#E5E5E5] focus:bg-white focus:outline-none text-[#404040] transition duration-200
                             placeholder:font-bold placeholder:text-[#A3A3A3] placeholder:text-sm"
                         :class="{
-                            'border-[#DC2626]  bg-[#FEE2E2]': errors?.password, 
-                            'border-[#A3A3A3] focus:border-[#22397A]': !errors?.password
+                            'border-[#DC2626]  bg-[#FEE2E2]': errors?.card_code, 
+                            'border-[#A3A3A3] focus:border-[#22397A]': !errors?.card_code
                         }"
                         v-model="form.card_code"
                     >
-                    <!-- <small v-if="errors?.password" class="text-red-500">{{ errors.password }}</small> -->
+                    <small v-if="errors?.card_code" class="text-red-500">{{ errors.card_code }}</small>
                 </div>
 
                 <div class="space-y-2 min-h-16">
@@ -149,6 +168,14 @@
 
 
         </section>
+
+        <ModalComponent 
+            :show="confirmingDeletion" 
+            text="¡Cambios Guardados Correctamente!"
+            url="/"
+            @close="closeModal">
+            
+        </ModalComponent>
 
     </div>
 

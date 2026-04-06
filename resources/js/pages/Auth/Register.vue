@@ -33,7 +33,7 @@
 <template>
     <section class="min-h-screen flex flex-col bg-white">
 
-        <header class="flex justify-between items-center w-full p-6 md:p-10 flex-shrink-0"> 
+        <header class="hidden lg:flex lg:justify-between lg:items-center lg:w-full lg:p-6 md:p-10 lg:flex-shrink-0"> 
             <img src="/img/Logo_Lockers_UNET.png" 
                  alt="logo lockers unet" 
                  class="h-12 md:h-20 w-auto object-contain"
@@ -46,17 +46,22 @@
 
         <main class="flex-grow flex items-center justify-center p-4">
 
-            <div class="flex flex-col md:flex-row w-full max-w-6xl items-center justify-center gap-10 md:gap-24">
+            <div class="flex flex-col lg:flex-row w-full max-w-6xl items-center justify-center gap-10 md:gap-24">
 
                 <div class="flex-shrink-0">
                     <img src="/img/Login.png" 
                          alt="imagen prueba" 
-                         class="h-auto max-h-[300px] md:max-h-[600px] w-auto object-contain"
+                         class="hidden lg:block lg:h-auto lg:max-h-[300px] md:max-h-[500px] lg:w-auto lg:object-contain"
+                    >
+
+                    <img src="/img/Logo_Lockers_UNET.png" 
+                         alt="imagen prueba" 
+                         class="block h-auto max-h-[100px] md:max-h-[200px] w-auto object-contain lg:hidden"
                     >
                 </div>
 
                 <div class="w-full max-w-md bg-white p-2">
-                    <h2 class="text-3xl font-bold text-gray-800 text-center mb-8 flex start">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-8 flex lg:start">
                         Resgistro
                     </h2>
 
@@ -72,7 +77,7 @@
                                 id="name"
                                 placeholder="Ingresa tu Nombre"
                                 class="w-full h-10 px-5 py-3 rounded-full bg-gray-100  border-2  focus:bg-white focus:outline-none text-[#404040] transition duration-200
-                                 placeholder:font-bold placeholder:text-[#A3A3A3] placeholder:text-sm"
+                                 placeholder:font-bold placeholder:text-[#A3A3A3] placeholder:text-xs md:placeholder:text-sm"
                                 :class="{
                                     'border-[#DC2626]  bg-[#FEE2E2]': errors?.name, 
                                     'border-[#A3A3A3] focus:border-[#22397A]': !errors?.name
@@ -92,7 +97,7 @@
                                 id="lastname"
                                 placeholder="Ingresa tu Apellido"
                                 class="w-full h-10 px-5 py-3 rounded-full bg-gray-100  border-2  focus:bg-white focus:outline-none text-[#404040] transition duration-200
-                                 placeholder:font-bold placeholder:text-[#A3A3A3] placeholder:text-sm"
+                                 placeholder:font-bold placeholder:text-[#A3A3A3] placeholder:text-xs md:placeholder:text-sm"
                                 :class="{
                                     'border-[#DC2626]  bg-[#FEE2E2]': errors?.lastname, 
                                     'border-[#A3A3A3] focus:border-[#22397A]': !errors?.lastname
@@ -112,7 +117,7 @@
                                 name="email"
                                 placeholder="Ingresa tu correo UNET"
                                 class="w-full h-10 px-5 py-3 rounded-full bg-gray-100  border-2  focus:bg-white focus:outline-none text-[#404040] transition duration-200
-                                 placeholder:font-bold placeholder:text-[#A3A3A3] placeholder:text-sm"
+                                 placeholder:font-bold placeholder:text-[#A3A3A3] placeholder:text-xs md:placeholder:text-sm"
                                 :class="{
                                     'border-[#DC2626]  bg-[#FEE2E2]': errors?.email, 
                                     'border-[#A3A3A3] focus:border-[#22397A]': !errors?.email
@@ -134,7 +139,7 @@
                                     name="card_code"
                                     placeholder="Código 5 dígitos Carnet"
                                     class="w-full h-10 px-5 py-3 rounded-full bg-gray-100  border-2  focus:bg-white focus:outline-none text-[#404040] transition duration-200
-                                    placeholder:font-bold placeholder:text-[#A3A3A3] placeholder:text-sm"
+                                    placeholder:font-bold placeholder:text-[#A3A3A3] placeholder:text-[10px] md:placeholder:text-sm"
                                     :class="{
                                         'border-[#DC2626]  bg-[#FEE2E2]': errors?.card_code, 
                                         'border-[#A3A3A3] focus:border-[#22397A]': !errors?.card_code
@@ -154,7 +159,7 @@
                                     name="career"
                                     placeholder="Ingresa tu carrera"
                                     class="w-full h-10 px-5 py-3 rounded-full bg-gray-100  border-2  focus:bg-white focus:outline-none text-[#404040] transition duration-200
-                                    placeholder:font-bold placeholder:text-[#A3A3A3] placeholder:text-sm"
+                                    placeholder:font-bold placeholder:text-[#A3A3A3] placeholder:text-[10px] md:placeholder:text-sm"
                                     :class="{
                                         'border-[#DC2626]  bg-[#FEE2E2]': errors?.career, 
                                         'border-[#A3A3A3] focus:border-[#22397A]': !errors?.career
@@ -176,7 +181,7 @@
                                 name="password"
                                 placeholder="Ingresa tu contraseña"
                                 class="w-full h-10 px-5 py-3 rounded-full bg-gray-100  border-2  focus:bg-white focus:outline-none text-[#404040] transition duration-200
-                                 placeholder:font-bold placeholder:text-[#A3A3A3] placeholder:text-sm"
+                                 placeholder:font-bold placeholder:text-[#A3A3A3] placeholder:text-xs md:placeholder:text-sm"
                                 :class="{
                                     'border-[#DC2626]  bg-[#FEE2E2]': errors?.password, 
                                     'border-[#A3A3A3] focus:border-[#22397A]': !errors?.password
@@ -197,7 +202,7 @@
                                 placeholder="Confirma tu contraseña"
                                 class="w-full h-10 px-5 py-3 rounded-full bg-gray-100  border-2 border-[#A3A3A3]
                                  focus:border-[#22397A] focus:bg-white focus:outline-none text-[#404040] transition duration-200
-                                 placeholder:font-bold placeholder:text-[#A3A3A3] placeholder:text-sm"
+                                 placeholder:font-bold placeholder:text-[#A3A3A3] placeholder:text-xs md:placeholder:text-sm"
                                 v-model="form.password_confirmation"
                             >
                             

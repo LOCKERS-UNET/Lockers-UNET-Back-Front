@@ -14,10 +14,12 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/edit-profile',[PerfilController::class,'index'])->name('editar-perfil');
     Route::post('/edit-profile',[PerfilController::class,'store']);
 
+
     Route::inertia('/mi-locker','User/MiLocker')->name('mi-locker');
     Route::inertia('/notificaciones','User/Notificaciones')->name('notificaciones');
     Route::inertia('/buscar-locker','User/BuscarLocker')->name('buscar-locker');
-
+    Route::inertia('/mis-solicitudes','User/MisSolicitudes')->name('mis-solicitudes');
+    Route::inertia('/reportes-user','User/ReporteIncidencia')->name('reportes-user');
 
     //Admin
     Route::inertia('/inicio-admin','Admin/HomeAdmin')->name('home-admin'); 

@@ -6,6 +6,7 @@
     const props = defineProps({
         show: Boolean,
         text: String,
+        titleButton:String,
         url: String
     });
 
@@ -62,7 +63,7 @@
                         :href="url" 
                         @click="$emit('close')"
                         class="text-center font-bold py-1  bg-[#213779] hover:bg-[#1a2b5f] text-white rounded-xl transition duration-300 shadow-md active:scale-95">
-                        Volver al Inicio
+                        {{titleButton}}
                     </Link>
                     
                 </div>

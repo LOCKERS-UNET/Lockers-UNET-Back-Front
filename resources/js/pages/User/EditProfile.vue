@@ -173,6 +173,7 @@
             :show="confirmingDeletion" 
             text="¡Cambios Guardados Correctamente!"
             url="/"
+            title-button="Volver al inicio"
             @close="closeModal">
             
         </ModalComponent>

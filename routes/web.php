@@ -2,10 +2,15 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\BuscarUsuarioController;
+use App\Http\Controllers\MultaController;
 use App\Http\Controllers\PerfilController;
+use App\Http\Middleware\IsAdminMiddleware;
 use Illuminate\Support\Facades\Route;
 
 // Route::inertia('/', 'Welcome')->name('home');
+
+//Rutas para los que esten AUTENTICADOS
 
 Route::middleware(['auth'])->group(function(){
 
@@ -21,18 +26,30 @@ Route::middleware(['auth'])->group(function(){
     Route::inertia('/mis-solicitudes','User/MisSolicitudes')->name('mis-solicitudes');
     Route::inertia('/reportes-user','User/ReporteIncidencia')->name('reportes-user');
 
-    //Admin
-    Route::inertia('/inicio-admin','Admin/HomeAdmin')->name('home-admin'); 
-    Route::inertia('/aranceles-admin','Admin/Aranceles')->name('aranceles-admin');
-    Route::inertia('/asignaciones-admin','Admin/Asignaciones')->name('asignaciones-admin');
-    Route::inertia('/estadisticas-lockers','Admin/EstadisticasLockers')->name('estadisticas-admin');
-    Route::inertia('/gestion-lockers-admin','Admin/GestionLockers')->name('gestion-admin');
-    Route::inertia('/incidencias-admin','Admin/Incidencias')->name('incidencias-admin');
-    Route::inertia('/usuarios-admin','Admin/Usuarios')->name('usuarios-admin');
+
+    //Rutas protegidas para el ADMIN
+
+    Route::middleware([IsAdminMiddleware::class])->group(function(){
+
+        //Admin
+        Route::inertia('/inicio-admin','Admin/HomeAdmin')->name('home-admin'); 
+        Route::inertia('/aranceles-admin','Admin/Aranceles')->name('aranceles-admin');
+        Route::inertia('/asignaciones-admin','Admin/Asignaciones')->name('asignaciones-admin');
+        Route::inertia('/estadisticas-lockers','Admin/EstadisticasLockers')->name('estadisticas-admin');
+        Route::inertia('/gestion-lockers-admin','Admin/GestionLockers')->name('gestion-admin');
+        Route::inertia('/incidencias-admin','Admin/Incidencias')->name('incidencias-admin');
+        Route::inertia('/usuarios-admin','Admin/Usuarios')->name('usuarios-admin');
+
+        //BuscarUsuario
+
+        Route::get('/admin/buscar/{user:card_code}',[BuscarUsuarioController::class,'mostrar_usuario']);
+
+        Route::get('/admin/multas/{user:card_code}',[MultaController::class,'index']);
+        Route::post('/admin/multas',[MultaController::class,'store']);
+
+    });
 
 });
-
-//Estas rutas deben ir protegidas
 
 
 Route::get('/login',[LoginController::class,'index'])->name('login');

@@ -16,8 +16,8 @@ class UsersSeeder extends Seeder
             'lastname' => 'Principal',
             'email' => 'admin@unet.edu.ve',
             'password' => Hash::make('Admin123!'),
-            'card_code' => 'ADMIN001',
-            'career' => 'Administracion',
+            'card_code' => '67845',
+            'career' => null, 
             'is_admin' => 1,
         ]);
 
@@ -27,7 +27,7 @@ class UsersSeeder extends Seeder
             'lastname' => 'Perez',
             'email' => 'juan@unet.edu.ve',
             'password' => Hash::make('Juan123$'),
-            'card_code' => 'EST001',
+            'card_code' => '33564',
             'career' => 'Informatica',
             'is_admin' => 0,
         ]);
@@ -38,8 +38,8 @@ class UsersSeeder extends Seeder
             'lastname' => 'Gomez',
             'email' => 'maria@unet.edu.ve',
             'password' => Hash::make('Maria123%'),
-            'card_code' => 'EST002',
-            'career' => 'Sistemas',
+            'card_code' => '12345',
+            'career' => 'Psicología',
             'is_admin' => 0,
         ]);
     }

@@ -1,10 +1,10 @@
 <script setup lang="ts">
 
+    import { router,Link } from '@inertiajs/vue3';
     import debounce from 'lodash/debounce';
 
-    import LayoutAdmin from '../Layouts/LayoutAdmin.vue';
-    import { router,Link } from '@inertiajs/vue3';
     import { watch, ref  } from 'vue';
+    import LayoutAdmin from '../Layouts/LayoutAdmin.vue';
 
     const props = defineProps<{
         users:any,

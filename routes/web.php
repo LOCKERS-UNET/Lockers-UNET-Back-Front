@@ -25,6 +25,8 @@ Route::middleware(['auth'])->group(function(){
     Route::inertia('/buscar-locker','User/BuscarLocker')->name('buscar-locker');
     Route::inertia('/mis-solicitudes','User/MisSolicitudes')->name('mis-solicitudes');
     Route::inertia('/reportes-user','User/ReporteIncidencia')->name('reportes-user');
+    
+    Route::get('/multas/usuario',[MultaController::class,'mis_multas']);
 
 
     //Rutas protegidas para el ADMIN
@@ -40,7 +42,7 @@ Route::middleware(['auth'])->group(function(){
         Route::inertia('/incidencias-admin','Admin/Incidencias')->name('incidencias-admin');
         Route::inertia('/usuarios-admin','Admin/Usuarios')->name('usuarios-admin');
 
-        //BuscarUsuario
+        //BuscarUsuarioAdmin
 
         Route::get('/admin/buscar',[BuscarUsuarioController::class,'index']);
         

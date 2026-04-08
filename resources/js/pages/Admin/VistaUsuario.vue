@@ -1,9 +1,9 @@
 <script setup lang="ts">
 
     import {Link,router} from '@inertiajs/vue3';
-    import LayoutAdmin from '../Layouts/LayoutAdmin.vue';   
     import { ref } from 'vue';
 import ModalComponent from '../Components/ModalComponent.vue';
+    import LayoutAdmin from '../Layouts/LayoutAdmin.vue';   
     
     interface User {
 

@@ -34,7 +34,9 @@ class LoginController extends Controller
         }
 
 
-
+        if(Auth::user()->is_admin){
+            return to_route('home-admin');    
+        }
         return to_route('home');
 
     }

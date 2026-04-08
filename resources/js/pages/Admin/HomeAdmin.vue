@@ -64,7 +64,7 @@
                     class="flex flex-col items-start justify-center gap-2 bg-[#F97316] p-2 sm:p-5 rounded-lg"
                 >
 
-                    <p class="text-white font-bold text-xs md:text-lg">Mantinimiento</p>
+                    <p class="text-white font-bold text-xs md:text-lg">Mantenimiento</p>
 
                     <p class="text-white font-bold text-xs sm:text-sm md:text-base">
                         650

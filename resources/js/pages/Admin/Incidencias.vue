@@ -1,202 +1,162 @@
 <script setup lang="ts">
-    import { ref, computed } from 'vue';
-    import LayoutAdmin from '../Layouts/LayoutAdmin.vue';
+import { ref, computed } from 'vue';
+import { Head } from '@inertiajs/vue3';
+import LayoutAdmin from '../Layouts/LayoutAdmin.vue';
+import ModalComponent from '../Components/ModalComponent.vue';
 
-    defineOptions({ layout: LayoutAdmin });
+defineOptions({ layout: LayoutAdmin });
 
-    // ── Tipos ──────────────────────────────────────────────────────────────
-    interface Incidencia {
-        id: number;
-        usuario: string;
-        carnet: string;
-        locker: string;
-        tipo: string;
-        descripcion: string;
-        fecha: string;
-        estado: 'Pendiente' | 'En proceso' | 'Resuelta';
+// ── Variables Reactivas ──
+const filtroActual = ref('Pendientes'); // 'Pendientes' | 'Revisadas'
+
+// Mock de incidencias con mas items para probar que se acomodan bien
+const incidenciasBase = ref([
+    {
+        id: 1,
+        usuario: 'Carlos Vivas',
+        locker: '#142',
+        edificio: 'B',
+        piso: 1,
+        fecha: '03/01/2026',
+        motivo: 'Cerradura Atascada',
+        estado: 'Pendientes'
+    },
+    {
+        id: 2,
+        usuario: 'Andrea Gomez',
+        locker: '#105',
+        edificio: 'A',
+        piso: 1,
+        fecha: '02/01/2026',
+        motivo: 'Falla interior, olor desagradable y puerta desencajada',
+        estado: 'Pendientes'
+    },
+    {
+        id: 3,
+        usuario: 'Juan Torres',
+        locker: '#111',
+        edificio: 'C',
+        piso: 2,
+        fecha: '04/01/2026',
+        motivo: 'Perdí mi llave',
+        estado: 'Pendientes'
+    },
+    {
+        id: 4,
+        usuario: 'Maria Lopez',
+        locker: '#204',
+        edificio: 'B',
+        piso: 2,
+        fecha: '01/01/2026',
+        motivo: 'Mantenimiento solicitado',
+        estado: 'Revisadas'
     }
+]);
 
-    // ── Datos mockeados ────────────────────────────────────────────────────
-    const incidencias = ref<Incidencia[]>([
-        { id: 1, usuario: 'Juan Pérez',      carnet: '12345', locker: 'B-142', tipo: 'Daño físico',   descripcion: 'La puerta del casillero no cierra correctamente.',     fecha: '07/04/2026', estado: 'Pendiente'  },
-        { id: 2, usuario: 'María González',  carnet: '23456', locker: 'A-103', tipo: 'Pérdida clave', descripcion: 'Se perdió la llave del casillero asignado.',            fecha: '05/04/2026', estado: 'En proceso' },
-        { id: 3, usuario: 'Carlos Ruiz',     carnet: '34567', locker: 'B-201', tipo: 'Robo',          descripcion: 'Reporta posible robo de pertenencias del casillero.',  fecha: '03/04/2026', estado: 'Resuelta'   },
-        { id: 4, usuario: 'Ana Martínez',    carnet: '45678', locker: 'C-101', tipo: 'Daño físico',   descripcion: 'Casillero presenta golpes y el seguro está dañado.',  fecha: '01/04/2026', estado: 'Pendiente'  },
-        { id: 5, usuario: 'Pedro Sánchez',   carnet: '56789', locker: 'A-202', tipo: 'Otro',          descripcion: 'El número del casillero no corresponde al asignado.', fecha: '28/03/2026', estado: 'Resuelta'   },
-    ]);
+// ── Filtro Computado ──
+const incidenciasFiltradas = computed(() => {
+    return incidenciasBase.value.filter(inc => inc.estado === filtroActual.value);
+});
 
-    // ── Filtro ───────────────────────────────────────────────────────────────
-    const filtroEstado = ref('Todos');
-    const estados = ['Todos', 'Pendiente', 'En proceso', 'Resuelta'];
+// ── Modal State ──
+const modalAbierto = ref(false);
+const modalMensaje = ref('');
 
-    const incidenciasFiltradas = computed(() =>
-        incidencias.value.filter(i =>
-            filtroEstado.value === 'Todos' || i.estado === filtroEstado.value
-        )
-    );
-
-    // ── Cambiar estado ───────────────────────────────────────────────────────
-    const cambiarEstado = (incidencia: Incidencia, nuevoEstado: Incidencia['estado']) => {
-        incidencia.estado = nuevoEstado;
-    };
-
-    // ── Helpers ─────────────────────────────────────────────────────────────
-    const estadoClases = (estado: string) => {
-        if (estado === 'Resuelta')   return 'bg-[#D1FAE5] text-[#0D7A5F]';
-        if (estado === 'En proceso') return 'bg-[#FEF9C3] text-[#92400E]';
-        return 'bg-[#FEE2E2] text-[#DC2626]';
-    };
-
-    // Detalle modal
-    const incidenciaDetalle = ref<Incidencia | null>(null);
-    const verDetalle = (i: Incidencia) => { incidenciaDetalle.value = i; };
-    const cerrarDetalle = () => { incidenciaDetalle.value = null; };
+const marcarComoRevisada = (inc: any) => {
+    inc.estado = 'Revisadas';
+    modalMensaje.value = "¡Incidencia marcada como revisada!";
+    modalAbierto.value = true;
+};
 </script>
 
 <template>
-    <div class="flex flex-col items-center min-h-screen py-8 px-4">
+    <Head title="Incidencias" />
+    <div class="min-h-screen bg-white py-12 px-4 flex justify-center">
 
-        <section class="w-full max-w-6xl flex flex-col gap-6">
+        <!-- El contenedor se hizo un poquito más ancho (max-w-4xl) para acomodar las tarjetas si se muestran en cuadricula -->
+        <div class="w-full max-w-4xl flex flex-col items-center">
+            
+            <!-- TITULO MAS GRANDE -->
+            <h1 class="text-4xl sm:text-5xl font-black text-black mb-10">Incidencias</h1>
 
-            <!-- Título y filtro -->
-            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                <h1 class="text-2xl font-bold lg:text-3xl">Incidencias</h1>
-                <select v-model="filtroEstado"
-                    class="h-10 px-4 rounded-full bg-white border-2 border-[#A3A3A3] focus:border-[#22397A]
-                           focus:outline-none text-[#404040] transition shadow-sm self-start sm:self-auto">
-                    <option v-for="e in estados" :key="e" :value="e">{{ e }}</option>
-                </select>
-            </div>
-
-            <!-- Contadores -->
-            <div class="grid grid-cols-3 gap-4">
-                <div class="bg-[#FEE2E2] rounded-xl p-4 text-center">
-                    <p class="text-[#DC2626] text-2xl font-black">{{ incidencias.filter(i => i.estado === 'Pendiente').length }}</p>
-                    <p class="text-[#DC2626] text-xs font-bold mt-1">Pendientes</p>
-                </div>
-                <div class="bg-[#FEF9C3] rounded-xl p-4 text-center">
-                    <p class="text-[#92400E] text-2xl font-black">{{ incidencias.filter(i => i.estado === 'En proceso').length }}</p>
-                    <p class="text-[#92400E] text-xs font-bold mt-1">En Proceso</p>
-                </div>
-                <div class="bg-[#D1FAE5] rounded-xl p-4 text-center">
-                    <p class="text-[#0D7A5F] text-2xl font-black">{{ incidencias.filter(i => i.estado === 'Resuelta').length }}</p>
-                    <p class="text-[#0D7A5F] text-xs font-bold mt-1">Resueltas</p>
+            <!-- Filtro -->
+            <div class="flex items-center gap-4 mb-12">
+                <span class="font-extrabold text-black text-lg">Filtrar Por:</span>
+                <div class="relative w-[180px]">
+                    <select v-model="filtroActual" class="w-full h-10 px-4 pr-10 border border-gray-200 shadow-sm rounded-xl font-extrabold text-sm text-black appearance-none bg-white focus:outline-none focus:border-gray-400 cursor-pointer">
+                        <option value="Pendientes">Pendientes</option>
+                        <option value="Revisadas">Revisadas</option>
+                    </select>
+                    <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4 text-[#1a5eb8]">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                        </svg>
+                    </div>
                 </div>
             </div>
 
-            <!-- TABLA DESKTOP -->
-            <div class="hidden md:block bg-white rounded-2xl shadow-[0px_4px_23px_0px_rgba(0,0,0,0.08)] overflow-hidden">
-                <table class="w-full text-sm">
-                    <thead class="bg-[#1C2F5E] text-white">
-                        <tr>
-                            <th class="text-left px-5 py-3 font-semibold">Usuario</th>
-                            <th class="text-left px-5 py-3 font-semibold">Carnet</th>
-                            <th class="text-left px-5 py-3 font-semibold">Locker</th>
-                            <th class="text-left px-5 py-3 font-semibold">Tipo</th>
-                            <th class="text-left px-5 py-3 font-semibold">Fecha</th>
-                            <th class="text-left px-5 py-3 font-semibold">Estado</th>
-                            <th class="text-left px-5 py-3 font-semibold">Acción</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-100">
-                        <tr v-for="i in incidenciasFiltradas" :key="i.id" class="hover:bg-gray-50 transition">
-                            <td class="px-5 py-3 font-semibold text-gray-800">{{ i.usuario }}</td>
-                            <td class="px-5 py-3 text-gray-600">{{ i.carnet }}</td>
-                            <td class="px-5 py-3 font-bold text-[#213779]">{{ i.locker }}</td>
-                            <td class="px-5 py-3 text-gray-600">{{ i.tipo }}</td>
-                            <td class="px-5 py-3 text-gray-500">{{ i.fecha }}</td>
-                            <td class="px-5 py-3">
-                                <span :class="['text-xs font-bold px-2 py-1 rounded-full', estadoClases(i.estado)]">
-                                    {{ i.estado }}
-                                </span>
-                            </td>
-                            <td class="px-5 py-3">
-                                <div class="flex items-center gap-2">
-                                    <button @click="verDetalle(i)"
-                                        class="text-[#213779] hover:underline text-xs font-bold">
-                                        Ver
-                                    </button>
-                                    <button v-if="i.estado !== 'Resuelta'"
-                                        @click="cambiarEstado(i, i.estado === 'Pendiente' ? 'En proceso' : 'Resuelta')"
-                                        class="text-[#0D7A5F] hover:underline text-xs font-bold">
-                                        {{ i.estado === 'Pendiente' ? 'Procesar' : 'Resolver' }}
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr v-if="incidenciasFiltradas.length === 0">
-                            <td colspan="7" class="text-center py-10 text-gray-400 font-semibold">
-                                No se encontraron incidencias
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+            <!-- Subtitulo Dinámico -->
+            <div class="w-full flex justify-start mb-6">
+                <!-- Tambien el titulo de la sección un poco mas grande -->
+                <h2 class="text-xl sm:text-2xl font-black text-black">
+                    Incidencias <span class="text-[#4472c4]">{{ filtroActual }}</span>:
+                </h2>
             </div>
 
-            <!-- CARDS MOBILE -->
-            <div class="flex flex-col gap-4 md:hidden">
-                <div v-if="incidenciasFiltradas.length === 0" class="text-center py-10 text-gray-400 font-semibold">
-                    No hay incidencias
-                </div>
-                <div v-for="i in incidenciasFiltradas" :key="i.id"
-                     class="bg-white rounded-xl shadow-[0px_4px_23px_0px_rgba(0,0,0,0.08)] p-4 flex flex-col gap-3">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="font-bold text-gray-800">{{ i.usuario }}</p>
-                            <p class="text-xs text-gray-500">{{ i.carnet }} · Locker <strong class="text-[#213779]">{{ i.locker }}</strong></p>
+            <!-- Lista de Incidencias: Cuadrícula ultra compacta (3 columnas en PC) -->
+            <div class="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 pb-20">
+                
+                <template v-if="incidenciasFiltradas.length > 0">
+                    <!-- TARJETA MINIATURIZADA -->
+                    <div v-for="inc in incidenciasFiltradas" :key="inc.id" class="bg-[#e4ebf7] rounded-sm p-3 flex flex-col shadow-sm border border-gray-100 hover:shadow-md transition">
+                        
+                        <!-- Encabezado Tarjeta -->
+                        <div class="w-full mb-2">
+                            <h3 class="text-sm font-black text-black">{{ inc.usuario }}</h3>
+                            <div class="h-px bg-gray-300 w-full mt-1"></div>
                         </div>
-                        <span :class="['text-xs font-bold px-2 py-1 rounded-full', estadoClases(i.estado)]">
-                            {{ i.estado }}
-                        </span>
+
+                        <!-- Detalles ultra compactos -->
+                        <div class="flex flex-col gap-0 mb-3 flex-1">
+                            <p class="text-[11px] text-gray-800"><span class="font-bold text-black">Locker:</span> {{ inc.locker }}</p>
+                            <p class="text-[11px] text-gray-800"><span class="font-bold text-black">Edificio:</span> {{ inc.edificio }} - P.{{ inc.piso }}</p>
+                            <p class="text-[11px] text-gray-800"><span class="font-bold text-black">Fecha:</span> {{ inc.fecha }}</p>
+                            <p class="text-[11px] text-gray-800 mt-[2px] line-clamp-2 leading-tight" :title="inc.motivo">
+                                <span class="font-bold text-black">Motivo:</span> {{ inc.motivo }}
+                            </p>
+                        </div>
+
+                        <!-- Botón Acción Compacto -->
+                        <div v-if="inc.estado === 'Pendientes'" class="w-full flex justify-center mt-auto">
+                            <!-- Padding ultra reducido y texto pequeñito -->
+                            <button @click="marcarComoRevisada(inc)" class="w-full bg-[#213779] hover:bg-[#1a2b5f] text-white font-extrabold py-1.5 px-2 rounded-md shadow-sm transition active:scale-95 text-[10px]">
+                                Revisada
+                            </button>
+                        </div>
+                        <div v-else class="w-full flex justify-center mt-auto py-1">
+                            <span class="text-[#0D7A5F] font-bold italic text-[10px]">Revisada y resuelta</span>
+                        </div>
+
                     </div>
-                    <p class="text-sm text-gray-600"><strong>Tipo:</strong> {{ i.tipo }}</p>
-                    <p class="text-xs text-gray-500">{{ i.descripcion }}</p>
-                    <div class="flex gap-2 pt-1">
-                        <button @click="verDetalle(i)"
-                            class="flex-1 py-1.5 border-2 border-[#213779] text-[#213779] text-sm font-bold
-                                   rounded-xl hover:bg-[#EBF0FA] transition">
-                            Ver detalle
-                        </button>
-                        <button v-if="i.estado !== 'Resuelta'"
-                            @click="cambiarEstado(i, i.estado === 'Pendiente' ? 'En proceso' : 'Resuelta')"
-                            class="flex-1 py-1.5 bg-[#0D7A5F] text-white text-sm font-bold rounded-xl hover:bg-[#0a6350] transition">
-                            {{ i.estado === 'Pendiente' ? 'Procesar' : 'Resolver' }}
-                        </button>
+                </template>
+                <template v-else>
+                    <div class="col-span-full flex justify-center py-10 opacity-50">
+                        <p class="font-bold text-gray-500">No hay incidencias {{ filtroActual.toLowerCase() }}.</p>
                     </div>
-                </div>
+                </template>
+
             </div>
 
-        </section>
+        </div>
 
-        <!-- Modal detalle -->
-        <dialog :open="!!incidenciaDetalle"
-            class="fixed inset-0 m-auto w-[90%] max-w-md rounded-2xl shadow-2xl border-none p-0 z-50
-                   backdrop:bg-gray-900/60 backdrop:backdrop-blur-sm">
-            <div v-if="incidenciaDetalle" class="bg-white rounded-2xl overflow-hidden">
-                <div class="bg-[#213779] px-6 py-4 flex items-center justify-between">
-                    <p class="text-white font-bold">Detalle de Incidencia</p>
-                    <button @click="cerrarDetalle" class="text-white/70 hover:text-white text-2xl leading-none">&times;</button>
-                </div>
-                <div class="p-6 flex flex-col gap-3 text-sm">
-                    <div class="flex justify-between"><span class="text-gray-500 font-semibold">Usuario</span><span class="font-bold">{{ incidenciaDetalle.usuario }}</span></div>
-                    <div class="flex justify-between"><span class="text-gray-500 font-semibold">Carnet</span><span class="font-bold">{{ incidenciaDetalle.carnet }}</span></div>
-                    <div class="flex justify-between"><span class="text-gray-500 font-semibold">Locker</span><span class="font-black text-[#213779]">{{ incidenciaDetalle.locker }}</span></div>
-                    <div class="flex justify-between"><span class="text-gray-500 font-semibold">Tipo</span><span class="font-bold">{{ incidenciaDetalle.tipo }}</span></div>
-                    <div class="flex justify-between"><span class="text-gray-500 font-semibold">Fecha</span><span class="font-bold">{{ incidenciaDetalle.fecha }}</span></div>
-                    <div class="flex justify-between items-center"><span class="text-gray-500 font-semibold">Estado</span>
-                        <span :class="['text-xs font-bold px-2 py-1 rounded-full', estadoClases(incidenciaDetalle.estado)]">{{ incidenciaDetalle.estado }}</span>
-                    </div>
-                    <div class="border-t pt-3">
-                        <p class="text-gray-500 font-semibold mb-1">Descripción</p>
-                        <p class="text-gray-700 leading-relaxed">{{ incidenciaDetalle.descripcion }}</p>
-                    </div>
-                    <button @click="cerrarDetalle"
-                        class="mt-2 w-full py-2 bg-[#213779] text-white font-bold rounded-xl hover:bg-[#1a2b5f] transition">
-                        Cerrar
-                    </button>
-                </div>
-            </div>
-        </dialog>
+        <!-- Modal -->
+        <ModalComponent
+            :show="modalAbierto"
+            :text="modalMensaje"
+            title-button="Aceptar"
+            url=""
+            @close="modalAbierto = false"
+        />
 
     </div>
 </template>

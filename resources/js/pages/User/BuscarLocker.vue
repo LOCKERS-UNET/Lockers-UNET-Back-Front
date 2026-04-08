@@ -1,213 +1,217 @@
 <script setup lang="ts">
-    import { ref, computed } from 'vue';
-    import Layout from '../Layouts/Layout.vue';
-    import ModalComponent from '../Components/ModalComponent.vue';
+import { ref, computed } from 'vue';
+import { Head } from '@inertiajs/vue3';
+import Layout from '../Layouts/Layout.vue';
+import ModalComponent from '../Components/ModalComponent.vue';
 
-    defineOptions({ layout: Layout });
+defineOptions({ layout: Layout });
 
-    // ── Tipos ──────────────────────────────────────────────────────────────
-    interface Locker {
-        id: number;
-        codigo: string;
-        edificio: string;
-        piso: number;
-        tamano: 'Pequeño' | 'Mediano' | 'Grande';
-        estado: 'Disponible' | 'Ocupado' | 'Mantenimiento';
-    }
+// ── Tipos ──────────────────────────────────────────────────────────────
+interface Locker {
+    id: number;
+    codigo: string;
+    sector: string;
+    tamano: string;
+    estado: string;
+}
 
-    // ── Datos mockeados ────────────────────────────────────────────────────
-    const lockers: Locker[] = [
-        { id: 1,  codigo: 'A-101', edificio: 'A', piso: 1, tamano: 'Pequeño',  estado: 'Disponible'   },
-        { id: 2,  codigo: 'A-102', edificio: 'A', piso: 1, tamano: 'Mediano',  estado: 'Ocupado'       },
-        { id: 3,  codigo: 'A-103', edificio: 'A', piso: 1, tamano: 'Grande',   estado: 'Disponible'    },
-        { id: 4,  codigo: 'A-201', edificio: 'A', piso: 2, tamano: 'Pequeño',  estado: 'Mantenimiento' },
-        { id: 5,  codigo: 'A-202', edificio: 'A', piso: 2, tamano: 'Mediano',  estado: 'Disponible'    },
-        { id: 6,  codigo: 'B-101', edificio: 'B', piso: 1, tamano: 'Grande',   estado: 'Disponible'    },
-        { id: 7,  codigo: 'B-102', edificio: 'B', piso: 1, tamano: 'Pequeño',  estado: 'Ocupado'       },
-        { id: 8,  codigo: 'B-103', edificio: 'B', piso: 1, tamano: 'Mediano',  estado: 'Disponible'    },
-        { id: 9,  codigo: 'B-201', edificio: 'B', piso: 2, tamano: 'Grande',   estado: 'Ocupado'       },
-        { id: 10, codigo: 'B-202', edificio: 'B', piso: 2, tamano: 'Pequeño',  estado: 'Disponible'    },
-        { id: 11, codigo: 'C-101', edificio: 'C', piso: 1, tamano: 'Mediano',  estado: 'Disponible'    },
-        { id: 12, codigo: 'C-102', edificio: 'C', piso: 1, tamano: 'Grande',   estado: 'Mantenimiento' },
-    ];
+// ── Datos mockeados (Base de datos ficticia) ──
+const lockersBase: Locker[] = [
+    { id: 1, codigo: 'B-141', sector: 'B', tamano: 'Pequeño', estado: 'Disponible' },
+    { id: 2, codigo: 'B-142', sector: 'B', tamano: 'Mediano', estado: 'Disponible' },
+    { id: 3, codigo: 'B-143', sector: 'B', tamano: 'Grande', estado: 'Ocupado' },
+    { id: 4, codigo: 'A-101', sector: 'A', tamano: 'Pequeño', estado: 'Mantenimiento' },
+    { id: 5, codigo: 'A-102', sector: 'A', tamano: 'Mediano', estado: 'Disponible' },
+    { id: 6, codigo: 'C-201', sector: 'C', tamano: 'Grande', estado: 'Disponible' },
+];
 
-    // ── Filtros ─────────────────────────────────────────────────────────────
-    const filtroEdificio = ref<string>('Todos');
-    const filtroEstado   = ref<string>('Todos');
+// ── Filtros Reactivos ──
+const filtroSector = ref<string>('');
+const filtroTamano = ref<string>('');
+const filtroEstado = ref<string>('');
 
-    const edificios = ['Todos', 'A', 'B', 'C'];
-    const estados   = ['Todos', 'Disponible', 'Ocupado', 'Mantenimiento'];
+// Lógica Computada para ejecutar el filtro
+const lockersFiltrados = computed(() => {
+    return lockersBase.filter(locker => {
+        // Si el filtro está vacío (""), dejar pasar. Si tiene algo, comparar.
+        const matchSector = filtroSector.value === '' || locker.sector === filtroSector.value;
+        const matchTamano = filtroTamano.value === '' || locker.tamano === filtroTamano.value;
+        const matchEstado = filtroEstado.value === '' || locker.estado === filtroEstado.value;
 
-    const lockersFiltrados = computed(() =>
-        lockers.filter(l => {
-            const porEdificio = filtroEdificio.value === 'Todos' || l.edificio === filtroEdificio.value;
-            const porEstado   = filtroEstado.value   === 'Todos' || l.estado   === filtroEstado.value;
-            return porEdificio && porEstado;
-        })
-    );
+        return matchSector && matchTamano && matchEstado;
+    });
+});
 
-    // ── Modal de solicitud ──────────────────────────────────────────────────
-    const modalAbierto   = ref(false);
-    const exitoModal     = ref(false);
-    const lockerSelected = ref<Locker | null>(null);
+// Opciones únicas extraídas de los datos (para rellenar los selects)
+const sectosDisponibles = [...new Set(lockersBase.map(l => l.sector))];
+const tamanosDisponibles = ['Pequeño', 'Mediano', 'Grande'];
+const estadosDisponibles = ['Disponible', 'Ocupado', 'Mantenimiento'];
 
-    const abrirModal = (locker: Locker) => {
-        lockerSelected.value = locker;
-        modalAbierto.value   = true;
-    };
+// ── Lógica Modal ──
+const modalAbierto = ref(false);
+const exitoModal = ref(false);
+const lockerSelected = ref<Locker | null>(null);
 
-    const confirmarSolicitud = () => {
-        modalAbierto.value = false;
-        exitoModal.value   = true;
-    };
+const abrirModal = (locker: Locker) => {
+    lockerSelected.value = locker;
+    modalAbierto.value = true;
+};
 
-    // ── Helpers de estilo ───────────────────────────────────────────────────
-    const estadoClases = (estado: string) => {
-        if (estado === 'Disponible')    return 'bg-[#D1FAE5] text-[#0D7A5F]';
-        if (estado === 'Ocupado')       return 'bg-[#FEE2E2] text-[#DC2626]';
-        if (estado === 'Mantenimiento') return 'bg-[#FEF9C3] text-[#92400E]';
-        return '';
-    };
+const confirmarSolicitud = () => {
+    modalAbierto.value = false;
+    exitoModal.value = true;
+};
 </script>
 
 <template>
-    <div class="flex flex-col items-center min-h-screen py-8 px-4">
+    <Head title="Buscar Locker" />
+    <div class="min-h-screen bg-white py-12 px-4 flex justify-center">
 
-        <section class="w-full max-w-5xl flex flex-col gap-6">
+        <div class="w-full max-w-4xl flex flex-col items-center">
+            
+            <!-- Contenedor con borde azul -->
+            <div class="w-full border-[5px] border-[#1da1f2] rounded-md p-6 sm:p-12 flex flex-col items-center">
+                
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-black mb-8">Búsqueda de Lockers</h1>
 
-            <h1 class="text-2xl font-bold lg:text-3xl text-center">Lista de Casilleros</h1>
+                <!-- Filtros Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6 w-full max-w-2xl mb-12">
+                    
+                    <!-- Filtro Sector -->
+                    <div class="relative w-full shadow-sm rounded-full">
+                        <select v-model="filtroSector" class="w-full h-12 px-6 border border-gray-200 rounded-[2rem] font-bold text-sm text-black appearance-none bg-white focus:outline-none focus:border-gray-400">
+                            <option value="">Sector (Todos)</option>
+                            <option v-for="sec in sectosDisponibles" :key="sec" :value="sec">Edificio {{ sec }}</option>
+                        </select>
+                        <div class="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4 text-black">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                            </svg>
+                        </div>
+                    </div>
 
-            <!-- Filtros -->
-            <div class="flex flex-col sm:flex-row gap-3 sm:gap-6">
+                    <!-- Filtro Tamaño -->
+                    <div class="relative w-full shadow-sm rounded-full">
+                        <select v-model="filtroTamano" class="w-full h-12 px-6 border border-gray-200 rounded-[2rem] font-bold text-sm text-black appearance-none bg-white focus:outline-none focus:border-gray-400">
+                            <option value="">Tamaño (Todos)</option>
+                            <option v-for="tam in tamanosDisponibles" :key="tam" :value="tam">{{ tam }}</option>
+                        </select>
+                        <div class="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4 text-black">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                            </svg>
+                        </div>
+                    </div>
 
-                <div class="flex flex-col gap-1 flex-1">
-                    <label class="text-sm font-semibold text-[#404040] ml-1">Edificio</label>
-                    <select
-                        v-model="filtroEdificio"
-                        class="w-full h-10 px-4 rounded-full bg-gray-100 border-2 border-[#A3A3A3]
-                               focus:border-[#22397A] focus:outline-none text-[#404040] transition duration-200"
-                    >
-                        <option v-for="e in edificios" :key="e" :value="e">{{ e }}</option>
-                    </select>
-                </div>
+                    <!-- Filtro Estado -->
+                    <div class="relative w-full shadow-sm rounded-full">
+                        <select v-model="filtroEstado" class="w-full h-12 px-6 border border-gray-200 rounded-[2rem] font-bold text-sm text-black appearance-none bg-white focus:outline-none focus:border-gray-400">
+                            <option value="">Estado (Todos)</option>
+                            <option v-for="est in estadosDisponibles" :key="est" :value="est">{{ est }}</option>
+                        </select>
+                        <div class="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4 text-black">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                            </svg>
+                        </div>
+                    </div>
 
-                <div class="flex flex-col gap-1 flex-1">
-                    <label class="text-sm font-semibold text-[#404040] ml-1">Estado</label>
-                    <select
-                        v-model="filtroEstado"
-                        class="w-full h-10 px-4 rounded-full bg-gray-100 border-2 border-[#A3A3A3]
-                               focus:border-[#22397A] focus:outline-none text-[#404040] transition duration-200"
-                    >
-                        <option v-for="e in estados" :key="e" :value="e">{{ e }}</option>
-                    </select>
-                </div>
-
-            </div>
-
-            <!-- Leyenda de estados -->
-            <div class="flex flex-wrap gap-3 text-sm">
-                <span class="flex items-center gap-1">
-                    <span class="w-3 h-3 rounded-full bg-[#0D7A5F] inline-block"></span> Disponible
-                </span>
-                <span class="flex items-center gap-1">
-                    <span class="w-3 h-3 rounded-full bg-[#DC2626] inline-block"></span> Ocupado
-                </span>
-                <span class="flex items-center gap-1">
-                    <span class="w-3 h-3 rounded-full bg-[#92400E] inline-block"></span> Mantenimiento
-                </span>
-            </div>
-
-            <!-- Grid de casilleros -->
-            <div v-if="lockersFiltrados.length > 0"
-                 class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-
-                <div
-                    v-for="locker in lockersFiltrados"
-                    :key="locker.id"
-                    class="flex flex-col gap-3 bg-white rounded-xl shadow-[0px_4px_23px_0px_rgba(0,0,0,0.1)] p-4 transition hover:shadow-md"
-                >
-                    <!-- Ícono locker -->
-                    <div class="flex justify-between items-start">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#3A6BC8" class="size-8">
-                            <path fill-rule="evenodd" d="M4.5 2.25a.75.75 0 0 0 0 1.5v16.5h-.75a.75.75 0 0 0 0 1.5h16.5a.75.75 0 0 0 0-1.5h-.75V3.75a.75.75 0 0 0 0-1.5h-15ZM9 6a.75.75 0 0 0 0 1.5h1.5a.75.75 0 0 0 0-1.5H9Zm-.75 3.75A.75.75 0 0 1 9 9h1.5a.75.75 0 0 1 0 1.5H9a.75.75 0 0 1-.75-.75ZM9 12a.75.75 0 0 0 0 1.5h1.5a.75.75 0 0 0 0-1.5H9Zm3.75-5.25A.75.75 0 0 1 13.5 6H15a.75.75 0 0 1 0 1.5h-1.5a.75.75 0 0 1-.75-.75ZM13.5 9a.75.75 0 0 0 0 1.5H15A.75.75 0 0 0 15 9h-1.5Zm-.75 3.75a.75.75 0 0 1 .75-.75H15a.75.75 0 0 1 0 1.5h-1.5a.75.75 0 0 1-.75-.75ZM9 19.5v-2.25a.75.75 0 0 1 .75-.75h4.5a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-.75.75h-4.5A.75.75 0 0 1 9 19.5Z" clip-rule="evenodd" />
+                    <!-- Botón Filtrar (Visual) -->
+                    <div class="w-full h-12 px-6 bg-[#213779] hover:bg-[#1a2b5f] text-white font-bold text-sm rounded-[2rem] flex items-center justify-between shadow-md transition-colors pointer-events-none">
+                        <span class="pl-2">Filtrar</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5">
+                          <path fill-rule="evenodd" d="M2.628 1.601C5.028 1.206 7.49 1 10 1s4.973.206 7.372.601a.75.75 0 0 1 .628.74v2.288a2.25 2.25 0 0 1-.659 1.59l-4.682 4.683a2.25 2.25 0 0 0-.659 1.59v3.037c0 .684-.31 1.33-.844 1.757l-1.937 1.55A.75.75 0 0 1 8 18.25v-5.757a2.25 2.25 0 0 0-.659-1.591L2.659 6.22A2.25 2.25 0 0 1 2 4.629V2.34a.75.75 0 0 1 .628-.74Z" clip-rule="evenodd" />
                         </svg>
-                        <span :class="['text-xs font-bold px-2 py-1 rounded-full', estadoClases(locker.estado)]">
-                            {{ locker.estado }}
-                        </span>
-                    </div>
-
-                    <div>
-                        <p class="font-black text-[#213779] text-lg">{{ locker.codigo }}</p>
-                        <p class="text-xs text-gray-500">Edificio {{ locker.edificio }} · Piso {{ locker.piso }}</p>
-                        <p class="text-xs text-gray-500">Tamaño: {{ locker.tamano }}</p>
-                    </div>
-
-                    <button
-                        v-if="locker.estado === 'Disponible'"
-                        @click="abrirModal(locker)"
-                        class="w-full py-2 bg-[#213779] hover:bg-[#1a2b5f] text-white text-sm font-bold
-                               rounded-lg transition duration-300 active:scale-95"
-                    >
-                        Solicitar
-                    </button>
-                    <div v-else class="py-2 text-center text-xs text-gray-400 font-semibold">
-                        No disponible
                     </div>
 
                 </div>
+
+                <!-- Lista de Lockers Reactiva -->
+                <div class="w-full max-w-3xl flex flex-col">
+                    
+                    <template v-if="lockersFiltrados.length > 0">
+                        <div v-for="(locker, idx) in lockersFiltrados" :key="locker.id" class="w-full">
+                            <!-- Separador (No poner arriba del primero) -->
+                            <div v-if="idx > 0" class="h-px bg-gray-300 w-full my-6"></div>
+                            <div v-if="idx === 0" class="h-px bg-gray-300 w-full mb-6"></div>
+
+                            <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                                <!-- Datos -->
+                                <div class="flex flex-col gap-1 w-full sm:w-1/3 text-center sm:text-left">
+                                    <p class="text-sm sm:text-base text-black"><span class="font-extrabold text-black">Locker:</span> {{ locker.codigo }}</p>
+                                    <p class="text-sm sm:text-base text-black"><span class="font-extrabold text-black">Tamaño:</span> {{ locker.tamano }}</p>
+                                </div>
+                                
+                                <!-- Estado -->
+                                <div class="w-full sm:w-1/3 flex justify-center">
+                                    <span :class="[
+                                        'font-extrabold text-sm sm:text-base tracking-wide',
+                                        locker.estado === 'Disponible' ? 'text-[#0D7A5F]' : (locker.estado === 'Ocupado' ? 'text-[#DC2626]' : 'text-orange-500')
+                                    ]">
+                                        {{ locker.estado }}
+                                    </span>
+                                </div>
+
+                                <!-- Botón -->
+                                <div class="w-full sm:w-1/3 flex justify-center sm:justify-end">
+                                    <button 
+                                        v-if="locker.estado === 'Disponible'" 
+                                        @click="abrirModal(locker)" 
+                                        class="bg-[#213779] hover:bg-[#1a2b5f] text-white font-bold py-2 px-8 rounded-xl shadow-md transition duration-300 active:scale-95 text-sm"
+                                    >
+                                        Solicitar
+                                    </button>
+                                    <p v-else class="text-gray-400 font-bold py-2 text-sm italic">
+                                        No Disponible
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                    
+                    <!-- Vacío -->
+                    <template v-else>
+                        <div class="py-12 flex flex-col items-center justify-center opacity-50">
+                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-10 h-10 mb-4 text-gray-400">
+                                <path fill-rule="evenodd" d="M10.5 3.75a6.75 6.75 0 1 0 0 13.5 6.75 6.75 0 0 0 0-13.5ZM2.25 10.5a8.25 8.25 0 1 1 14.59 5.28l4.69 4.69a.75.75 0 1 1-1.06 1.06l-4.69-4.69A8.25 8.25 0 0 1 2.25 10.5Z" clip-rule="evenodd" />
+                            </svg>
+                            <p class="font-bold text-gray-500">Ningún locker coincide con los filtros</p>
+                        </div>
+                    </template>
+                </div>
+
+            </div>
+            
+            <!-- Paginación (Puntitos) -->
+            <div class="flex gap-2 justify-center mt-6">
+                <div class="w-2 h-2 rounded-full bg-gray-300"></div>
+                <div class="w-2 h-2 rounded-full bg-gray-300"></div>
+                <div class="w-2 h-2 rounded-full bg-gray-300"></div>
+                <div class="w-4 h-2 rounded-full bg-gray-400"></div>
+                <div class="w-2 h-2 rounded-full bg-gray-300"></div>
+                <div class="w-2 h-2 rounded-full bg-gray-300"></div>
+                <div class="w-2 h-2 rounded-full bg-gray-300"></div>
             </div>
 
-            <!-- Sin resultados -->
-            <div v-else class="flex flex-col items-center justify-center py-16 gap-4 text-gray-400">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-16">
-                    <path fill-rule="evenodd" d="M10.5 3.75a6.75 6.75 0 1 0 0 13.5 6.75 6.75 0 0 0 0-13.5ZM2.25 10.5a8.25 8.25 0 1 1 14.59 5.28l4.69 4.69a.75.75 0 1 1-1.06 1.06l-4.69-4.69A8.25 8.25 0 0 1 2.25 10.5Z" clip-rule="evenodd" />
-                </svg>
-                <p class="font-semibold text-lg">No se encontraron casilleros</p>
-            </div>
-
-        </section>
+        </div>
 
         <!-- ─── Modal de confirmación de solicitud ─── -->
         <dialog
             :open="modalAbierto"
-            class="fixed inset-0 m-auto w-[90%] max-w-md rounded-xl shadow-2xl border-none p-0 backdrop:bg-gray-900/60"
+            class="fixed inset-0 m-auto w-[90%] max-w-sm rounded-[2rem] shadow-2xl border border-gray-100 p-8 pt-10"
         >
-            <div v-if="modalAbierto && lockerSelected" class="bg-white p-6 rounded-xl">
+            <div v-if="modalAbierto && lockerSelected" class="flex flex-col items-center">
+                <img src="/img/Icono_Aceptar.png" class="h-24 mb-6" alt="Icono Confirmación">
+                <h3 class="text-xl font-black text-center mb-2">Solicitar Locker</h3>
+                <p class="text-center text-sm font-bold text-gray-500 mb-8">
+                    ¿Deseas enviar la solicitud asignar <br> a la administración por el Casillero {{ lockerSelected.codigo }}?
+                </p>
 
-                <h3 class="text-xl font-black text-center mb-4">Solicitud de Locker</h3>
-
-                <div class="bg-gray-50 rounded-xl p-4 flex flex-col gap-2 mb-6">
-                    <div class="flex justify-between">
-                        <span class="text-sm font-semibold text-gray-600">Código</span>
-                        <span class="text-sm font-black text-[#213779]">{{ lockerSelected.codigo }}</span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span class="text-sm font-semibold text-gray-600">Edificio</span>
-                        <span class="text-sm font-bold">{{ lockerSelected.edificio }}</span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span class="text-sm font-semibold text-gray-600">Piso</span>
-                        <span class="text-sm font-bold">{{ lockerSelected.piso }}</span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span class="text-sm font-semibold text-gray-600">Tamaño</span>
-                        <span class="text-sm font-bold">{{ lockerSelected.tamano }}</span>
-                    </div>
-                </div>
-
-                <div class="flex gap-3">
-                    <button
-                        @click="modalAbierto = false"
-                        class="flex-1 py-2 border-2 border-gray-300 text-gray-600 font-bold rounded-xl
-                               hover:bg-gray-50 transition duration-200"
-                    >
+                <div class="flex w-full gap-4">
+                    <button @click="modalAbierto = false" class="flex-1 py-3 text-white font-bold bg-[#DC2626] rounded-xl hover:bg-red-700 transition">
                         Cancelar
                     </button>
-                    <button
-                        @click="confirmarSolicitud"
-                        class="flex-1 py-2 bg-[#213779] hover:bg-[#1a2b5f] text-white font-bold rounded-xl
-                               transition duration-300 active:scale-95"
-                    >
+                    <button @click="confirmarSolicitud" class="flex-1 py-3 text-white font-bold bg-[#213779] rounded-xl hover:bg-[#1a2b5f] transition active:scale-95">
                         Confirmar
                     </button>
                 </div>

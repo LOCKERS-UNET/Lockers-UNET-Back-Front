@@ -42,10 +42,13 @@ Route::middleware(['auth'])->group(function(){
 
         //BuscarUsuario
 
+        Route::get('/admin/buscar',[BuscarUsuarioController::class,'index']);
+        
         Route::get('/admin/buscar/{user:card_code}',[BuscarUsuarioController::class,'mostrar_usuario']);
 
         Route::get('/admin/multas/{user:card_code}',[MultaController::class,'index']);
         Route::post('/admin/multas',[MultaController::class,'store']);
+        Route::delete('/admin/multas/{multa:id}',[MultaController::class,'destroy']);
 
     });
 
@@ -59,3 +62,5 @@ Route::post('/logout',[LoginController::class,'logout']);
 
 Route::get('/register',[RegisterController::class,'index']);
 Route::post('/register',[RegisterController::class,'store']);
+
+

@@ -39,4 +39,15 @@ class MultaController extends Controller
 
     }
 
+    public function destroy(Multa $multa){
+
+        
+        $multa = Multa::find($multa->id);
+
+        $multa->delete();
+        
+        return back();
+
+    }
+
 }

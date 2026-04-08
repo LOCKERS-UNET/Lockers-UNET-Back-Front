@@ -1,7 +1,9 @@
 <script setup lang="ts">
 
-    import {Link} from '@inertiajs/vue3';
+    import {Link,router} from '@inertiajs/vue3';
     import LayoutAdmin from '../Layouts/LayoutAdmin.vue';   
+    import { ref } from 'vue';
+import ModalComponent from '../Components/ModalComponent.vue';
     
     interface User {
 
@@ -13,11 +15,39 @@
 
     }
 
+
+    const confirmingDeletion = ref(false);
+
+    //* Funciones para abrir y cerrar Modal*/
+
+    const openModal = () => {
+        confirmingDeletion.value = true;
+    };
+
+    
+    const closeModal = () => {
+        confirmingDeletion.value = false;
+    };
+
+    //*Fin de las funciones */
+
     defineProps<{
         user: User;
+        multa: any;
     }>();
 
     defineOptions({layout: LayoutAdmin})
+
+    const eliminarMulta=(id:number)=>{
+
+        router.delete(`/admin/multas/${id}`,{
+            onSuccess:()=>{
+                openModal();
+            }
+        });
+
+    }
+
 
 </script>
 
@@ -82,43 +112,62 @@
             </div>
 
             <!-- SECCIÓN LOCKER -->
-            <div class="flex flex-col gap-4">
-                <h2 class="text-[#4169C4] text-2xl font-bold">Información Locker</h2> 
+            <div class="flex flex-col gap-4 w-3/4 self-center">
+                <h2 class="text-[#4169C4] text-2xl font-bold">Multas del Usuario</h2> 
 
-                <section class="flex flex-col gap-3 ">
-                    <div class="grid grid-cols-2 gap-6 shadow-[0px_4px_23px_0px_rgba(0,_0,_0,_0.1)] p-6 rounded-md bg-white ">
-                        <div class="flex flex-col gap-2 items-center">
-            
-                            <p class="font-bold text-sm sm:text-base">
-                                ID Locker: 
-                                <span class="font-normal">142</span>
-                            </p>
-                            <p class="font-bold text-sm sm:text-base">
-                                Código: 
-                                <span class="font-normal break-all">B-142</span>
-                            </p>
-                        </div>
+                <section 
+                    v-if="multa"
+                    class="flex flex-row justify-between items-center shadow-[0px_4px_23px_0px_rgba(0,_0,_0,_0.1)] p-6 rounded-md bg-white "
+                >
 
-                        <div class="flex flex-col gap-2 items-center">
-                            
-                            <p class="font-bold text-sm sm:text-base">
-                                Tamaño: 
-                                <span class="font-normal">Mediano</span>
-                            </p>
-                            <p class="font-bold text-sm sm:text-base">
-                                Edificio: <span class="font-normal">B - Piso 1</span>
-                            </p>
-                        </div>
+                    <div class="flex flex-col gap-3">
+                        <p class="font-bold flex flex-row gap-2 text-sm sm:block sm:text-base">
+                            Admin:
+                            <span class="font-normal block text-xs sm:text-base sm:inline"> {{$page.props.auth.user.name}}</span>
+                        </p>
+                        <p class="font-bold flex flex-row gap-2 text-sm sm:block sm:text-base">
+                            Motivo:
+                            <span class="font-normal block text-xs sm:text-base sm:inline">{{multa.descripcion}}</span>
+                        </p>
+                        <p class="font-bold flex flex-row gap-2 text-sm sm:block sm:text-base">
+                            Monto:
+                            <span class="font-normal block text-xs sm:text-base sm:inline"> {{multa.monto}} BS.</span>
+                        </p>
                     </div>
 
-                    <Link href="/logout" method="post" as="button" class="self-end">
-                        <p class="bg-[#DC2626] text-white px-6 py-2 rounded-md hover:bg-red-700 transition-colors text-sm font-medium">
-                            Cerrar Sesión
-                        </p>
-                    </Link>
+                    <button 
+                        @click="eliminarMulta(multa.id)"
+                        class="cursor-pointer"
+                    >
+
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#DC2626" class="size-6 sm:size8 md:size-10">
+                            <path fill-rule="evenodd" d="M16.5 4.478v.227a48.816 48.816 0 0 1 3.878.512.75.75 0 1 1-.256 1.478l-.209-.035-1.005 13.07a3 3 0 0 1-2.991 2.77H8.084a3 3 0 0 1-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 0 1-.256-1.478A48.567 48.567 0 0 1 7.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 0 1 3.369 0c1.603.051 2.815 1.387 2.815 2.951Zm-6.136-1.452a51.196 51.196 0 0 1 3.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 0 0-6 0v-.113c0-.794.609-1.428 1.364-1.452Zm-.355 5.945a.75.75 0 1 0-1.5.058l.347 9a.75.75 0 1 0 1.499-.058l-.346-9Zm5.48.058a.75.75 0 1 0-1.498-.058l-.347 9a.75.75 0 0 0 1.5.058l.345-9Z" clip-rule="evenodd" />
+                        </svg>
+
+                    </button>
+                
                 </section>
+
+                <section 
+
+                    v-else
+                    class="flex flex-row justify-between items-center shadow-[0px_4px_23px_0px_rgba(0,_0,_0,_0.1)] p-6 rounded-md bg-white "
+                >
+                    El usuario no posee Multas
+                </section>
+
             </div>
 
         </div>
+
+        <ModalComponent 
+            :show="confirmingDeletion" 
+            text="¡Multa Eliminada Correctamente!"
+            url="/inicio-admin"
+            title-button="Volver al Panel"
+            @close="closeModal">
+            
+        </ModalComponent>
+
     </div>
 </template>

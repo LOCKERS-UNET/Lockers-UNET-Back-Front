@@ -25,6 +25,7 @@ Route::middleware(['auth'])->group(function(){
     Route::inertia('/buscar-locker','User/BuscarLocker')->name('buscar-locker');
     Route::inertia('/mis-solicitudes','User/MisSolicitudes')->name('mis-solicitudes');
     Route::inertia('/reportes-user','User/ReporteIncidencia')->name('reportes-user');
+    Route::inertia('/pago-arancel','User/PagoArancel')->name('pago-arancel');
 
 
     //Rutas protegidas para el ADMIN
@@ -56,6 +57,9 @@ Route::get('/login',[LoginController::class,'index'])->name('login');
 Route::post('/login',[LoginController::class,'store']);
 Route::post('/logout',[LoginController::class,'logout']);
 
+Route::inertia('/forgot-password','Auth/ForgotPassword')->name('forgot-password');
+Route::inertia('/verify-code','Auth/VerifyCode')->name('verify-code');
+Route::inertia('/new-password','Auth/NewPassword')->name('new-password');
 
 Route::get('/register',[RegisterController::class,'index']);
 Route::post('/register',[RegisterController::class,'store']);

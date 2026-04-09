@@ -78,14 +78,14 @@
                     <p class="font-bold text-xs sm:text-sm lg:text-base">
                         Locker:
                         <span class="font-normal">
-                            xxx
+                            002
                         </span>
                     </p>
 
                     <p class="font-bold text-xs sm:text-sm lg:text-base">
                         Edificio
                         <span class="font-normal">
-                            xxx
+                            A
                         </span>
                     </p>
 

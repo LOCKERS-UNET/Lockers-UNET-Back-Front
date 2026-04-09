@@ -7,6 +7,9 @@ use App\Http\Controllers\MultaController;
 use App\Http\Controllers\PerfilController;
 use App\Http\Middleware\IsAdminMiddleware;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\VerificationCodeController;
+use App\Http\Controllers\Auth\NewPasswordController;
 
 // Route::inertia('/', 'Welcome')->name('home');
 
@@ -82,3 +85,23 @@ Route::get('/register',[RegisterController::class,'index']);
 Route::post('/register',[RegisterController::class,'store']);
 
 
+Route::middleware('guest')->group(function () {
+    // Paso 1: Ingresar correo
+    Route::get('/forgot-password', [ForgotPasswordController::class, 'show'])
+        ->name('password.request');
+    Route::post('/forgot-password', [ForgotPasswordController::class, 'send'])
+        ->name('password.email');
+
+    // Paso 2: Verificar código
+    Route::get('/verify-code', [VerificationCodeController::class, 'show'])
+        ->name('password.verify');
+    Route::post('/verify-code', [VerificationCodeController::class, 'verify'])
+        ->name('password.verify.post');
+
+    // Paso 3: Nueva contraseña
+    Route::get('/new-password', [NewPasswordController::class, 'show'])
+        ->name('password.new');
+    Route::post('/new-password', [NewPasswordController::class, 'update'])
+        ->name('password.update');
+
+});

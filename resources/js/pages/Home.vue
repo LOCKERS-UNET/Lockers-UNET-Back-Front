@@ -101,7 +101,7 @@
                     </p>
 
                     <p class="text-[#0D7A5F] font-bold text-sm sm:text-base">
-                        X Disponibles
+                        20 Disponibles
                     </p>
 
                 </div>
@@ -117,7 +117,7 @@
                     </p>
 
                     <p  class=" text-[#0D7A5F] font-bold text-sm sm:text-base">
-                        X Disponibles
+                        10 Disponibles
                     </p>
 
                 </div>

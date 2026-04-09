@@ -22,34 +22,27 @@
             <h1 class=" text-4xl text-center font-bold mb-5">Pago Arancel</h1>
 
             <section 
-                    v-if="multa"
-                    class="w-1/2 flex flex-row justify-center items-center shadow-[0px_4px_23px_0px_rgba(0,_0,_0,_0.1)] p-6 rounded-md bg-white "
+                    
+                class="w-1/2 flex flex-row justify-center items-center shadow-[0px_4px_23px_0px_rgba(0,_0,_0,_0.1)] p-6 rounded-md bg-white "
             >
 
                 <div class="flex flex-col gap-3">
                     
                     <p class="self-center  font-bold flex flex-row gap-2 text-xs sm:block sm:text-base">
                         Monto:
-                        <span class="font-normal block text-xs sm:text-base sm:inline"> {{multa.monto}} BS.</span>
+                        <span class="font-normal block text-xs sm:text-base sm:inline"> 4000 BS.</span>
                     </p>
 
                     <p class="self-center font-bold flex flex-row gap-2 text-xs sm:block sm:text-base">
                         Motivo:
-                        <span class="font-normal block text-xs sm:text-base sm:inline">{{multa.descripcion}}</span>
+                        <span class="font-normal block text-xs sm:text-base sm:inline">Locker Mediano</span>
                     </p>
                     
                 </div>
 
             </section>
 
-            <section 
-
-                v-else
-                class="flex flex-row justify-between items-center shadow-[0px_4px_23px_0px_rgba(0,_0,_0,_0.1)] p-6 rounded-md bg-white "
-            >
-                El usuario no posee Multas
-            </section>
-
+            
             <div class=" w-full flex flex-col gap-7">
 
                 <h2 class=" text-xl sm:text-3xl font-bold text-[#4169C4]">

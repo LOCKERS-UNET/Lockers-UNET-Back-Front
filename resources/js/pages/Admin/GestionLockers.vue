@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import { Head} from '@inertiajs/vue3';
 import { ref } from 'vue';
-import { Head, Link } from '@inertiajs/vue3';
-import LayoutAdmin from '../Layouts/LayoutAdmin.vue';
 import ModalComponent from '../Components/ModalComponent.vue';
+import LayoutAdmin from '../Layouts/LayoutAdmin.vue';
 
 defineOptions({ layout: LayoutAdmin });
 
@@ -203,15 +203,15 @@ const confirmarAgregar = () => {
 
         </div>
 
-    </div>
+        <!-- Modal de confirmación -->
+        <ModalComponent
+            :show="modalAbierto"
+            text="¡Locker agregado correctamente!"
+            url="/gestion-lockers-admin"
+            title-button="Volver al Panel"
+            @close="modalAbierto = false; cambiarVista('modificar')"
+        />
 
-    <!-- Modal de confirmación -->
-    <ModalComponent
-        :show="modalAbierto"
-        text="¡Locker agregado correctamente!"
-        url="/gestion-lockers-admin"
-        title-button="Volver al Panel"
-        @close="modalAbierto = false; cambiarVista('modificar')"
-    />
+    </div>
 
 </template>

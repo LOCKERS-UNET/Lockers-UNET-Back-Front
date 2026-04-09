@@ -87,11 +87,11 @@ import ModalComponent from '../Components/ModalComponent.vue';
                             </p>
                             <p class="font-bold flex flex-row gap-2 text-sm sm:block sm:text-base">
                                 Locker: 
-                                <span class="font-normal block sm:inline break-all">xxxxxxxx</span>
+                                <span class="font-normal block sm:inline break-all">002</span>
                             </p>
                             <p class="font-bold flex flex-row gap-2 text-sm sm:block sm:text-base">
                                 Edificio: 
-                                <span class="font-normal block sm:inline break-all">xxxxxx</span>
+                                <span class="font-normal block sm:inline break-all">A</span>
                             </p>
                             
                         </div>

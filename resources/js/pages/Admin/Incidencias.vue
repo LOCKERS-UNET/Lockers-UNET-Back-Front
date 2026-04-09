@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
 import { Head } from '@inertiajs/vue3';
-import LayoutAdmin from '../Layouts/LayoutAdmin.vue';
+import { ref, computed } from 'vue';
 import ModalComponent from '../Components/ModalComponent.vue';
+import LayoutAdmin from '../Layouts/LayoutAdmin.vue';
 
 defineOptions({ layout: LayoutAdmin });
 

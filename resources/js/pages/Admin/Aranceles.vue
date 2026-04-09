@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue';
 import { Head } from '@inertiajs/vue3';
+import { ref } from 'vue';
 import LayoutAdmin from '../Layouts/LayoutAdmin.vue';
 
 defineOptions({ layout: LayoutAdmin });
@@ -28,9 +28,11 @@ const cancelarEdicion = () => {
 const guardarEdicion = () => {
     // Aquí en el futuro se enviará por Axios/Inertia a Laravel
     const index = aranceles.value.findIndex(a => a.id === arancelToEdit.value.id);
+
     if(index !== -1) {
         aranceles.value[index].monto = arancelToEdit.value.monto;
     }
+
     isEditing.value = false;
     arancelToEdit.value = null;
     alert("¡Arancel actualizado visualmente!");

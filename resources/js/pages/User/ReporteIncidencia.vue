@@ -86,10 +86,10 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue';
 import { Head } from '@inertiajs/vue3';
-import Layout from '../Layouts/Layout.vue';
+import { reactive, ref } from 'vue';
 import ModalComponent from '../Components/ModalComponent.vue';
+import Layout from '../Layouts/Layout.vue';
 
 defineOptions({ layout: Layout });
 

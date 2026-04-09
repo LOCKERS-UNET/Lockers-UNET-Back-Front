@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
 import { Head } from '@inertiajs/vue3';
-import Layout from '../Layouts/Layout.vue';
+import { ref, computed } from 'vue';
 import ModalComponent from '../Components/ModalComponent.vue';
+import Layout from '../Layouts/Layout.vue';
 
 defineOptions({ layout: Layout });
 

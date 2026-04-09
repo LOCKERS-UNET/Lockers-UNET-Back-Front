@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Head } from '@inertiajs/vue3';
 import { ref, computed } from 'vue';
-import ModalComponent from '../Components/ModalComponent.vue';
+// import ModalComponent from '../Components/ModalComponent.vue';
 import Layout from '../Layouts/Layout.vue';
 
 defineOptions({ layout: Layout });
@@ -48,19 +48,19 @@ const tamanosDisponibles = ['Pequeño', 'Mediano', 'Grande'];
 const estadosDisponibles = ['Disponible', 'Ocupado', 'Mantenimiento'];
 
 // ── Lógica Modal ──
-const modalAbierto = ref(false);
-const exitoModal = ref(false);
-const lockerSelected = ref<Locker | null>(null);
+// const modalAbierto = ref(false);
+// const exitoModal = ref(false);
+// const lockerSelected = ref<Locker | null>(null);
 
-const abrirModal = (locker: Locker) => {
-    lockerSelected.value = locker;
-    modalAbierto.value = true;
-};
+// const abrirModal = (locker: Locker) => {
+//     lockerSelected.value = locker;
+//     modalAbierto.value = true;
+// };
 
-const confirmarSolicitud = () => {
-    modalAbierto.value = false;
-    exitoModal.value = true;
-};
+// const confirmarSolicitud = () => {
+//     modalAbierto.value = false;
+//     exitoModal.value = true;
+// };
 </script>
 
 <template>
@@ -156,7 +156,7 @@ const confirmarSolicitud = () => {
                                 <div class="w-full sm:w-1/3 flex justify-center sm:justify-end">
                                     <button 
                                         v-if="locker.estado === 'Disponible'" 
-                                        @click="abrirModal(locker)" 
+                                        
                                         class="bg-[#213779] hover:bg-[#1a2b5f] text-white font-bold py-2 px-8 rounded-xl shadow-md transition duration-300 active:scale-95 text-sm"
                                     >
                                         Solicitar
@@ -196,7 +196,7 @@ const confirmarSolicitud = () => {
         </div>
 
         <!-- ─── Modal de confirmación de solicitud ─── -->
-        <dialog
+        <!-- <dialog
             :open="modalAbierto"
             class="fixed inset-0 m-auto w-[90%] max-w-sm rounded-[2rem] shadow-2xl border border-gray-100 p-8 pt-10"
         >
@@ -216,16 +216,16 @@ const confirmarSolicitud = () => {
                     </button>
                 </div>
             </div>
-        </dialog>
+        </dialog> -->
 
         <!-- ─── Modal de éxito ─── -->
-        <ModalComponent
+        <!-- <ModalComponent
             :show="exitoModal"
             text="¡Solicitud enviada correctamente!"
             url="/"
             title-button="Volver al inicio"
             @close="exitoModal = false"
-        />
+        /> -->
 
     </div>
 </template>

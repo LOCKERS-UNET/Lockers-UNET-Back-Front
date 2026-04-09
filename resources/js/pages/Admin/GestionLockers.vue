@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { Head, Link } from '@inertiajs/vue3';
+import { Head} from '@inertiajs/vue3';
 import LayoutAdmin from '../Layouts/LayoutAdmin.vue';
 import ModalComponent from '../Components/ModalComponent.vue';
 
@@ -49,7 +49,21 @@ const confirmarAgregar = () => {
                 </button>
             </div>
 
-            <h2 class="text-lg font-extrabold text-[#4472c4] mb-12 text-center">Modificar Locker B-142</h2>
+                <!-- Filtros Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6 w-full max-w-2xl mb-12">
+                    
+                    <!-- Filtro Sector -->
+                    <div class="relative w-full shadow-sm rounded-full">
+                        <select v-model="filtroSector" class="w-full h-12 px-6 border border-gray-200 rounded-[2rem] font-bold text-sm text-black appearance-none bg-white focus:outline-none focus:border-gray-400">
+                            <option value="">Sector (Todos)</option>
+                            <option v-for="sec in sectosDisponibles" :key="sec" :value="sec">Edificio {{ sec }}</option>
+                        </select>
+                        <div class="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4 text-black">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                            </svg>
+                        </div>
+                    </div>
 
             <!-- Grid de Formulario -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-7 w-full max-w-2xl pb-10">
@@ -67,7 +81,6 @@ const confirmarAgregar = () => {
                             <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
                         </svg>
                     </div>
-                </div>
 
                 <!-- Tamaño -->
                 <div class="relative w-full shadow-sm rounded-full h-14 mt-[22px]">
@@ -82,7 +95,6 @@ const confirmarAgregar = () => {
                             <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
                         </svg>
                     </div>
-                </div>
 
                 <!-- Estado -->
                 <div class="relative w-full shadow-sm rounded-full h-14 mt-[22px]">
@@ -97,6 +109,7 @@ const confirmarAgregar = () => {
                             <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
                         </svg>
                     </div>
+
                 </div>
 
                 <!-- Código -->
@@ -106,15 +119,16 @@ const confirmarAgregar = () => {
                 </div>
 
             </div>
-
-            <!-- Botones -->
-            <div class="w-full max-w-[280px] flex flex-col gap-4 mt-8">
-                <button class="w-full py-4 bg-[#213779] hover:bg-[#1a2b5f] text-white font-extrabold rounded-xl shadow-md transition-colors active:scale-95 text-md">
-                    Guardar cambios
-                </button>
-                <button class="w-full py-4 bg-[#f0384a] hover:bg-[#d42c3d] text-white font-extrabold rounded-xl shadow-md transition-colors active:scale-95 text-md">
-                    Eliminar Locker
-                </button>
+            
+            <!-- Paginación (Puntitos) -->
+            <div class="flex gap-2 justify-center mt-6">
+                <div class="w-2 h-2 rounded-full bg-gray-300"></div>
+                <div class="w-2 h-2 rounded-full bg-gray-300"></div>
+                <div class="w-2 h-2 rounded-full bg-gray-300"></div>
+                <div class="w-4 h-2 rounded-full bg-gray-400"></div>
+                <div class="w-2 h-2 rounded-full bg-gray-300"></div>
+                <div class="w-2 h-2 rounded-full bg-gray-300"></div>
+                <div class="w-2 h-2 rounded-full bg-gray-300"></div>
             </div>
 
         </div>

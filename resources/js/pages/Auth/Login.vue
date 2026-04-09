@@ -105,9 +105,8 @@
                             >
                             <small v-if="errors?.password" class="text-red-500">{{ errors.password }}</small>
                             <div class="flex justify-end pr-2">
-                                <a href="#" class="text-gray-500 text-sm hover:text-blue-600 transition">
-                                    ¿Olvidaste tu contraseña?
-                                </a>
+                                <Link href="/forgot-password" class="text-gray-500 text-sm hover:text-blue-600 transition"> ¿Olvidaste tu contraseña?
+                                </Link>
                             </div>
                         </div>
 

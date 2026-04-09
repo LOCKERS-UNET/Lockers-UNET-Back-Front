@@ -120,7 +120,7 @@
                 </Link>
 
                 <Link 
-                    href="/estadistica-lockers"
+                    href="/estadisticas-lockers"
                     class="flex flex-row items-center justify-center gap-5 bg-[#213779] hover:bg-[#1a2b5f] p-2 sm:p-5 rounded-lg"
                 >
 

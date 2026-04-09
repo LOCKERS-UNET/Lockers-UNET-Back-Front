@@ -25,7 +25,7 @@ class UsersSeeder extends Seeder
         User::create([
             'name' => 'Juan',
             'lastname' => 'Perez',
-            'email' => 'juan@unet.edu.ve',
+            'email' => 'arturo.carvajalino@unet.edu.ve',
             'password' => Hash::make('123456'),
             'card_code' => '33564',
             'career' => 'Informatica',

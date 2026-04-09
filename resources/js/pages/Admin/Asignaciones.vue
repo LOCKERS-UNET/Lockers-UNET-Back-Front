@@ -93,7 +93,7 @@ const confirmarAccion = (accion: string) => {
                         class="w-full py-4 pl-16 pr-6 border border-gray-200 rounded-full font-bold text-black text-sm shadow-[0_2px_12px_rgba(0,0,0,0.06)] focus:outline-none focus:border-gray-400 focus:ring-0 text-center"
                         @dblclick="toggleLockerState"
                     />
-                    <p class="text-[10px] text-gray-400 mt-2 text-center absolute -bottom-5 w-full">(Doble clic arriba para cambiar entre Asignar y Liberar)</p>
+                    <p class="text-[10px] text-gray-700 mt-2 text-center absolute -bottom-5 w-full">(Doble clic arriba para cambiar entre Asignar y Liberar)</p>
                 </div>
 
                 <!-- Tarjeta Usuario Principal -->
@@ -215,7 +215,7 @@ const confirmarAccion = (accion: string) => {
         <ModalComponent
             :show="modalAbierto"
             :text="modalMensaje"
-            url="/gestion-lockers-admin"
+            url="/inicio-admin"
             title-button="Aceptar"
             @close="modalAbierto = false"
         />

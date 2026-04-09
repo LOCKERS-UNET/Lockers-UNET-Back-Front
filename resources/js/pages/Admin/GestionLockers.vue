@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Head} from '@inertiajs/vue3';
+import { Head } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import ModalComponent from '../Components/ModalComponent.vue';
 import LayoutAdmin from '../Layouts/LayoutAdmin.vue';
@@ -213,5 +213,7 @@ const confirmarAgregar = () => {
         />
 
     </div>
+
+    
 
 </template>

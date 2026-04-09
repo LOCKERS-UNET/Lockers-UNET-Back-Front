@@ -45,7 +45,7 @@ const locker = {
                     </div>
                 </Link>
 
-                <Link href="#" class="flex items-center justify-between bg-[#213779] hover:bg-[#1a2b5f] text-white font-bold py-4 px-6 rounded-xl transition-colors shadow-md">
+                <Link href="/multas/usuario" class="flex items-center justify-between bg-[#213779] hover:bg-[#1a2b5f] text-white font-bold py-4 px-6 rounded-xl transition-colors shadow-md">
                     <span class="ml-2">Multas</span>
                     <!-- Icono Alerta Seguro -->
                     <div class="bg-white rounded-full p-[2px]">

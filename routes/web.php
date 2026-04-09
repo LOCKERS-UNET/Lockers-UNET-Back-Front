@@ -43,6 +43,8 @@ Route::middleware(['auth'])->group(function(){
         Route::inertia('/incidencias-admin','Admin/Incidencias')->name('incidencias-admin'); //OJO
         Route::inertia('/usuarios-admin','Admin/Usuarios')->name('usuarios-admin');
 
+        Route::inertia('/modificar-locker','Admin/ModificarLocker')->name('modificar-locker');
+
         //BuscarUsuarioAdmin
 
         Route::get('/admin/buscar',[BuscarUsuarioController::class,'index']);

@@ -6,13 +6,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class Multa extends Model
 {
-    //
+    // Indicar el nombre real de la tabla
+    protected $table = 'fines';
+
+    // Indicar la clave primaria personalizada
+    protected $primaryKey = 'fine_id';
 
     protected $fillable = [
-        'monto',
-        'descripcion',
+        'assignment_id',
         'user_id',
-        'admin_id'
+        'amount', // Antes 'monto'
+        'reason', // Antes 'descripcion'
+        'status'
     ];
-
 }

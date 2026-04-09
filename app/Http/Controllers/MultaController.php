@@ -10,56 +10,61 @@ use Inertia\Inertia;
 
 class MultaController extends Controller
 {
-
-    public function index(User $user){
-
-        return Inertia::render('Admin/CrearMulta',[
-            'user'=>$user
+    /**
+     * Muestra el formulario para crear una multa a un usuario específico.
+     */
+    public function index(User $user)
+    {
+        return Inertia::render('Admin/CrearMulta', [
+            'user' => $user
         ]);
-
-
     }
 
-    public function store(Request $request){
-
+    /**
+     * Guarda una nueva multa en la tabla 'fines'.
+     */
+    public function store(Request $request)
+    {
         $request->validate([
-
-            'monto'=>['required','integer','min:1'],
-            'descripcion'=>['required','string','max:255']
-
+            'assignment_id' => ['required', 'integer', 'exists:assignments,assignment_id'],
+            'user_id'       => ['required', 'integer', 'exists:users,id'],
+            'amount'        => ['required', 'numeric', 'min:1'],
+            'reason'        => ['required', 'string', 'max:255']
         ]);
 
         Multa::create([
-            'user_id'=>$request->user_id,
-            'admin_id'=>Auth::user()->id,
-            'monto'=>$request->monto,
-            'descripcion'=>$request->descripcion
+            'assignment_id' => $request->assignment_id,
+            'user_id'       => $request->user_id,
+            'amount'        => $request->amount,
+            'reason'        => $request->reason,
+            'status'        => 'pendiente'
         ]);
 
-
+        return back()->with('message', 'Multa creada con éxito');
     }
 
-    public function mis_multas(){
+    /**
+     * Lista las multas del usuario autenticado.
+     */
+    public function mis_multas()
+    {
+        // Traemos todas las multas del usuario para mostrarlas en la vista
+        $mis_multas = Multa::where('user_id', Auth::id())->get();
 
-        $mis_multas = Multa::query()->where('user_id',Auth::user()->id)->first();
-
-        return Inertia::render('User/MultasUser',[
-            'multa'=>$mis_multas
+        return Inertia::render('User/MultasUser', [
+            'multas' => $mis_multas
         ]);
-
-
     }
 
-
-    public function destroy(Multa $multa){
-
-        
-        $multa = Multa::find($multa->id);
-
+    /**
+     * Elimina una multa específica.
+     */
+    public function destroy(Multa $multa)
+    {
+        // Gracias al Route Model Binding y a que definimos $primaryKey en el modelo,
+        // $multa ya contiene la instancia correcta usando 'fine_id'.
         $multa->delete();
         
-        return back();
-
+        return back()->with('message', 'Multa eliminada');
     }
-
 }

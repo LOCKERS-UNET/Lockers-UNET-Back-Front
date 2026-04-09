@@ -15,7 +15,7 @@ return new class extends Migration
             //
             $table->string('lastname');
             $table->string('card_code')->unique();
-            $table->string('career');
+            $table->string('career')->nullable();
             $table->boolean('is_admin')->default(0);
 
         });

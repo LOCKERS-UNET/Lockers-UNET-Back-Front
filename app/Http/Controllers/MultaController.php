@@ -39,4 +39,27 @@ class MultaController extends Controller
 
     }
 
+    public function mis_multas(){
+
+        $mis_multas = Multa::query()->where('user_id',Auth::user()->id)->first();
+
+        return Inertia::render('User/MultasUser',[
+            'multa'=>$mis_multas
+        ]);
+
+
+    }
+
+
+    public function destroy(Multa $multa){
+
+        
+        $multa = Multa::find($multa->id);
+
+        $multa->delete();
+        
+        return back();
+
+    }
+
 }

@@ -19,7 +19,7 @@
 
         <section class=" w-full max-w-3xl flex flex-col gap-5 items-center p-5">
 
-            <h1 class=" text-4xl text-center font-bold mb-5">Pago Arancel</h1>
+            <h1 class=" text-4xl text-center font-bold mb-5">Multas</h1>
 
             <section 
                     v-if="multa"

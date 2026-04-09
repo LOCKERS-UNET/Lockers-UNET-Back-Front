@@ -26,6 +26,8 @@ Route::middleware(['auth'])->group(function(){
     Route::inertia('/mis-solicitudes','User/MisSolicitudes')->name('mis-solicitudes'); //FALTA SE DEBE HABLAR
     Route::inertia('/reportes-user','User/ReporteIncidencia')->name('reportes-user');
     Route::inertia('/pago-arancel','User/PagoArancel')->name('pago-arancel');// LISTO
+    
+    Route::get('/multas/usuario',[MultaController::class,'mis_multas']);
 
 
     //Rutas protegidas para el ADMIN
@@ -41,12 +43,15 @@ Route::middleware(['auth'])->group(function(){
         Route::inertia('/incidencias-admin','Admin/Incidencias')->name('incidencias-admin'); //OJO
         Route::inertia('/usuarios-admin','Admin/Usuarios')->name('usuarios-admin');
 
-        //BuscarUsuario
+        //BuscarUsuarioAdmin
 
+        Route::get('/admin/buscar',[BuscarUsuarioController::class,'index']);
+        
         Route::get('/admin/buscar/{user:card_code}',[BuscarUsuarioController::class,'mostrar_usuario']);
 
         Route::get('/admin/multas/{user:card_code}',[MultaController::class,'index']);
         Route::post('/admin/multas',[MultaController::class,'store']);
+        Route::delete('/admin/multas/{multa:id}',[MultaController::class,'destroy']);
 
     });
 
@@ -63,3 +68,5 @@ Route::inertia('/new-password','Auth/NewPassword')->name('new-password');
 
 Route::get('/register',[RegisterController::class,'index']);
 Route::post('/register',[RegisterController::class,'store']);
+
+

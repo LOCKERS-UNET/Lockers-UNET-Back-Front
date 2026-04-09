@@ -23,7 +23,17 @@ Route::middleware(['auth'])->group(function(){
     Route::inertia('/mi-locker','User/MiLocker')->name('mi-locker'); //LISTO
     Route::inertia('/notificaciones','User/Notificaciones')->name('notificaciones'); //OJO
     Route::inertia('/buscar-locker','User/BuscarLocker')->name('buscar-locker');//LISTO
-    Route::inertia('/mis-solicitudes','User/MisSolicitudes')->name('mis-solicitudes'); //FALTA SE DEBE HABLAR
+    Route::get('/solicitud-locker', function () {
+        return inertia('User/SolicitudLocker', [
+            'lockerData' => request()->all()
+        ]);
+    })->name('solicitud-locker');
+    Route::get('/solicitud-locker', function () {
+    return inertia('User/SolicitudLocker', [
+        'lockerData' => request()->all()
+    ]);
+})->name('solicitud-locker');
+    Route::inertia('/mis-solicitudes','User/MisSolicitudes')->name('mis-solicitudes'); Route::inertia('/devolucion-locker', 'User/DevolucionLocker')->name('devolucion-locker');
     Route::inertia('/reportes-user','User/ReporteIncidencia')->name('reportes-user');
     Route::inertia('/pago-arancel','User/PagoArancel')->name('pago-arancel');// LISTO
     

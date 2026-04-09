@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Head } from '@inertiajs/vue3';
+import { Head, router } from '@inertiajs/vue3';
 import { ref, computed } from 'vue';
 // import ModalComponent from '../Components/ModalComponent.vue';
 import Layout from '../Layouts/Layout.vue';
@@ -30,6 +30,16 @@ const filtroSector = ref<string>('');
 const filtroTamano = ref<string>('');
 const filtroEstado = ref<string>('');
 
+const irASolicitud = (locker: Locker) => {
+    router.get('/solicitud-locker', {
+        id: locker.id,
+        codigo: locker.codigo,
+        tamano: locker.tamano,
+        // Asignamos el edificio/piso basado en el sector para que coincida con la imagen
+        edificio: `Edificio ${locker.sector} - Piso 1` 
+    });
+};
+
 // Lógica Computada para ejecutar el filtro
 const lockersFiltrados = computed(() => {
     return lockersBase.filter(locker => {
@@ -47,20 +57,6 @@ const sectosDisponibles = [...new Set(lockersBase.map(l => l.sector))];
 const tamanosDisponibles = ['Pequeño', 'Mediano', 'Grande'];
 const estadosDisponibles = ['Disponible', 'Ocupado', 'Mantenimiento'];
 
-// ── Lógica Modal ──
-// const modalAbierto = ref(false);
-// const exitoModal = ref(false);
-// const lockerSelected = ref<Locker | null>(null);
-
-// const abrirModal = (locker: Locker) => {
-//     lockerSelected.value = locker;
-//     modalAbierto.value = true;
-// };
-
-// const confirmarSolicitud = () => {
-//     modalAbierto.value = false;
-//     exitoModal.value = true;
-// };
 </script>
 
 <template>
@@ -69,15 +65,12 @@ const estadosDisponibles = ['Disponible', 'Ocupado', 'Mantenimiento'];
 
         <div class="w-full max-w-4xl flex flex-col items-center">
             
-            <!-- Contenedor con borde azul -->
             <div class="w-full border-[5px] border-[#1da1f2] rounded-md p-6 sm:p-12 flex flex-col items-center">
                 
                 <h1 class="text-2xl sm:text-3xl font-extrabold text-black mb-8">Búsqueda de Lockers</h1>
 
-                <!-- Filtros Grid -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6 w-full max-w-2xl mb-12">
                     
-                    <!-- Filtro Sector -->
                     <div class="relative w-full shadow-sm rounded-full">
                         <select v-model="filtroSector" class="w-full h-12 px-6 border border-gray-200 rounded-[2rem] font-bold text-sm text-black appearance-none bg-white focus:outline-none focus:border-gray-400">
                             <option value="">Sector (Todos)</option>
@@ -90,7 +83,6 @@ const estadosDisponibles = ['Disponible', 'Ocupado', 'Mantenimiento'];
                         </div>
                     </div>
 
-                    <!-- Filtro Tamaño -->
                     <div class="relative w-full shadow-sm rounded-full">
                         <select v-model="filtroTamano" class="w-full h-12 px-6 border border-gray-200 rounded-[2rem] font-bold text-sm text-black appearance-none bg-white focus:outline-none focus:border-gray-400">
                             <option value="">Tamaño (Todos)</option>
@@ -103,7 +95,6 @@ const estadosDisponibles = ['Disponible', 'Ocupado', 'Mantenimiento'];
                         </div>
                     </div>
 
-                    <!-- Filtro Estado -->
                     <div class="relative w-full shadow-sm rounded-full">
                         <select v-model="filtroEstado" class="w-full h-12 px-6 border border-gray-200 rounded-[2rem] font-bold text-sm text-black appearance-none bg-white focus:outline-none focus:border-gray-400">
                             <option value="">Estado (Todos)</option>
@@ -116,7 +107,6 @@ const estadosDisponibles = ['Disponible', 'Ocupado', 'Mantenimiento'];
                         </div>
                     </div>
 
-                    <!-- Botón Filtrar (Visual) -->
                     <div class="w-full h-12 px-6 bg-[#213779] hover:bg-[#1a2b5f] text-white font-bold text-sm rounded-[2rem] flex items-center justify-between shadow-md transition-colors pointer-events-none">
                         <span class="pl-2">Filtrar</span>
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5">
@@ -126,23 +116,19 @@ const estadosDisponibles = ['Disponible', 'Ocupado', 'Mantenimiento'];
 
                 </div>
 
-                <!-- Lista de Lockers Reactiva -->
                 <div class="w-full max-w-3xl flex flex-col">
                     
                     <template v-if="lockersFiltrados.length > 0">
                         <div v-for="(locker, idx) in lockersFiltrados" :key="locker.id" class="w-full">
-                            <!-- Separador (No poner arriba del primero) -->
                             <div v-if="idx > 0" class="h-px bg-gray-300 w-full my-6"></div>
                             <div v-if="idx === 0" class="h-px bg-gray-300 w-full mb-6"></div>
 
                             <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-                                <!-- Datos -->
                                 <div class="flex flex-col gap-1 w-full sm:w-1/3 text-center sm:text-left">
                                     <p class="text-sm sm:text-base text-black"><span class="font-extrabold text-black">Locker:</span> {{ locker.codigo }}</p>
                                     <p class="text-sm sm:text-base text-black"><span class="font-extrabold text-black">Tamaño:</span> {{ locker.tamano }}</p>
                                 </div>
                                 
-                                <!-- Estado -->
                                 <div class="w-full sm:w-1/3 flex justify-center">
                                     <span :class="[
                                         'font-extrabold text-sm sm:text-base tracking-wide',
@@ -152,11 +138,10 @@ const estadosDisponibles = ['Disponible', 'Ocupado', 'Mantenimiento'];
                                     </span>
                                 </div>
 
-                                <!-- Botón -->
                                 <div class="w-full sm:w-1/3 flex justify-center sm:justify-end">
                                     <button 
                                         v-if="locker.estado === 'Disponible'" 
-                                        
+                                        @click="irASolicitud(locker)"
                                         class="bg-[#213779] hover:bg-[#1a2b5f] text-white font-bold py-2 px-8 rounded-xl shadow-md transition duration-300 active:scale-95 text-sm"
                                     >
                                         Solicitar
@@ -169,7 +154,6 @@ const estadosDisponibles = ['Disponible', 'Ocupado', 'Mantenimiento'];
                         </div>
                     </template>
                     
-                    <!-- Vacío -->
                     <template v-else>
                         <div class="py-12 flex flex-col items-center justify-center opacity-50">
                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-10 h-10 mb-4 text-gray-400">
@@ -182,7 +166,6 @@ const estadosDisponibles = ['Disponible', 'Ocupado', 'Mantenimiento'];
 
             </div>
             
-            <!-- Paginación (Puntitos) -->
             <div class="flex gap-2 justify-center mt-6">
                 <div class="w-2 h-2 rounded-full bg-gray-300"></div>
                 <div class="w-2 h-2 rounded-full bg-gray-300"></div>
@@ -192,40 +175,6 @@ const estadosDisponibles = ['Disponible', 'Ocupado', 'Mantenimiento'];
                 <div class="w-2 h-2 rounded-full bg-gray-300"></div>
                 <div class="w-2 h-2 rounded-full bg-gray-300"></div>
             </div>
-
         </div>
-
-        <!-- ─── Modal de confirmación de solicitud ─── -->
-        <!-- <dialog
-            :open="modalAbierto"
-            class="fixed inset-0 m-auto w-[90%] max-w-sm rounded-[2rem] shadow-2xl border border-gray-100 p-8 pt-10"
-        >
-            <div v-if="modalAbierto && lockerSelected" class="flex flex-col items-center">
-                <img src="/img/Icono_Aceptar.png" class="h-24 mb-6" alt="Icono Confirmación">
-                <h3 class="text-xl font-black text-center mb-2">Solicitar Locker</h3>
-                <p class="text-center text-sm font-bold text-gray-500 mb-8">
-                    ¿Deseas enviar la solicitud asignar <br> a la administración por el Casillero {{ lockerSelected.codigo }}?
-                </p>
-
-                <div class="flex w-full gap-4">
-                    <button @click="modalAbierto = false" class="flex-1 py-3 text-white font-bold bg-[#DC2626] rounded-xl hover:bg-red-700 transition">
-                        Cancelar
-                    </button>
-                    <button @click="confirmarSolicitud" class="flex-1 py-3 text-white font-bold bg-[#213779] rounded-xl hover:bg-[#1a2b5f] transition active:scale-95">
-                        Confirmar
-                    </button>
-                </div>
-            </div>
-        </dialog> -->
-
-        <!-- ─── Modal de éxito ─── -->
-        <!-- <ModalComponent
-            :show="exitoModal"
-            text="¡Solicitud enviada correctamente!"
-            url="/"
-            title-button="Volver al inicio"
-            @close="exitoModal = false"
-        /> -->
-
     </div>
 </template>

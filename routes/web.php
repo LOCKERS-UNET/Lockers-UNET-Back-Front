@@ -20,12 +20,12 @@ Route::middleware(['auth'])->group(function(){
     Route::post('/edit-profile',[PerfilController::class,'store']);
 
 
-    Route::inertia('/mi-locker','User/MiLocker')->name('mi-locker');
-    Route::inertia('/notificaciones','User/Notificaciones')->name('notificaciones');
-    Route::inertia('/buscar-locker','User/BuscarLocker')->name('buscar-locker');
-    Route::inertia('/mis-solicitudes','User/MisSolicitudes')->name('mis-solicitudes');
+    Route::inertia('/mi-locker','User/MiLocker')->name('mi-locker'); //LISTO
+    Route::inertia('/notificaciones','User/Notificaciones')->name('notificaciones'); //OJO
+    Route::inertia('/buscar-locker','User/BuscarLocker')->name('buscar-locker');//LISTO
+    Route::inertia('/mis-solicitudes','User/MisSolicitudes')->name('mis-solicitudes'); //FALTA SE DEBE HABLAR
     Route::inertia('/reportes-user','User/ReporteIncidencia')->name('reportes-user');
-    Route::inertia('/pago-arancel','User/PagoArancel')->name('pago-arancel');
+    Route::inertia('/pago-arancel','User/PagoArancel')->name('pago-arancel');// LISTO
 
 
     //Rutas protegidas para el ADMIN
@@ -34,11 +34,11 @@ Route::middleware(['auth'])->group(function(){
 
         //Admin
         Route::inertia('/inicio-admin','Admin/HomeAdmin')->name('home-admin'); 
-        Route::inertia('/aranceles-admin','Admin/Aranceles')->name('aranceles-admin');
-        Route::inertia('/asignaciones-admin','Admin/Asignaciones')->name('asignaciones-admin');
+        Route::inertia('/aranceles-admin','Admin/Aranceles')->name('aranceles-admin'); //LISTO Viene con opcion de editar
+        Route::inertia('/asignaciones-admin','Admin/Asignaciones')->name('asignaciones-admin'); //LISTO
         Route::inertia('/estadisticas-lockers','Admin/EstadisticasLockers')->name('estadisticas-admin');
-        Route::inertia('/gestion-lockers-admin','Admin/GestionLockers')->name('gestion-admin');
-        Route::inertia('/incidencias-admin','Admin/Incidencias')->name('incidencias-admin');
+        Route::inertia('/gestion-lockers-admin','Admin/GestionLockers')->name('gestion-admin'); //LISTO Falta Back
+        Route::inertia('/incidencias-admin','Admin/Incidencias')->name('incidencias-admin'); //OJO
         Route::inertia('/usuarios-admin','Admin/Usuarios')->name('usuarios-admin');
 
         //BuscarUsuario
